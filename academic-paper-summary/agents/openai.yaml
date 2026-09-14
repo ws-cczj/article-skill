@@ -1,0 +1,6 @@
+interface:
+  display_name: "论文精读总结"
+  short_description: "只需提供原论文，按内置老师要求生成中文图文精读总结文档"
+  default_prompt: "使用 $academic-paper-summary，按内置老师要求和写作规范总结这篇论文，生成包含原图与具体结果解读的Word文档。"
+policy:
+  allow_implicit_invocation: true
