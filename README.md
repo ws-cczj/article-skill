@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 论文精读总结 Skill
 
 安装后只需提供待总结的完整论文PDF，并说“总结这篇文献”。Agent读取skill内置的老师要求与写作规范，生成中文图文总结。默认DOCX；多个目标PDF默认形成同一文档内的独立总结单元。
@@ -30,3 +31,7 @@ python academic-paper-summary/scripts/validate_summary.py summary.docx --expecte
 DOCX检查需要python-docx。默认主要结论至少5幅图、创新点3条。原文可用图不足时可按已核实数量指定`--min-figures`，多篇不同数量可用`--min-figures-per-paper 3,5`。机械通过不代表事实、图文对应和写作质量通过，仍须原文核查与逐页视觉检查。
 
 用户附件、论文和提取图片仅留在当次输出目录，不随skill公开分发。
+=======
+# article-skill
+article-skill
+>>>>>>> 2b34345578cabe2d8b501d4d026101ce7eee74ef

@@ -1,0 +1,68 @@
+Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
+[14] Li C, Cai G, Tian H. Numerical analysis of combustion characteristics of hybrid combustion performance with AI-metal-oreganic fameworks and nano-
+rocket motor with multi-section swirl injection. Acta Astronaut 2016;123: aluminum in HTPB fuel. Chin J Explos Propellants 2024;47(5):413e21.
+26e36. [36] Chen S, Yu H, Zhang W, Shen R, Guo W, DeLuca LT, Wang H, Ye Y. Sponge-like
+[15] Yu X, Yu H, Gao H, Zhang W, DeLuca LT, Shen R. 3D printed different polymer Al/PVDF films with laser sensitivity and high combustion performance pre-
+fuel grains for hybrid rocket engine. Fire Phys Chem 2024;4(2):139e45. pared by rapid phase inversion. Chem Eng J 2020;396:124962.
+[16] Zong H, Ren H, Ke X, Wang S, Hao G, Hu Y, Zhang G, Xiao L, Jiang W. Rheo- [37] DeLisio JB, Hu X, Wu T, Egan GC, Young G, Zachariah MR. Probing the reaction
+logical and printability evaluation of melt-cast explosives for fused deposition mechanism of aluminum/poly(vinylidene fluoride) composites. J Phys Chem B
+modeling (FDM) 3D printing. Fire Phys Chem 2024;4(1):34e41. 2016;120(24):5534e42.
+[17] Armold D, Boyer JE, Kuo K, Fuller JK, Desain J, Curtiss TJ. Test of hybrid rocket [38] Wang P, Qian W, Zhong R, He F, Li X, Chen J, Meng L, Sun Y, He G. Construction
+fuel grains with swirl patterns fabricated using rapid prototyping technology. of core@double-shell structured energetic composites with simultaneously
+In: 49th AIAA/ASME/SAE/ASEE joint propulsion conference. San Jose, CA: enhanced thermal stability and safety performance. Def Technol 2024;34:
+American Institute of Aeronautics and Astronautics; 2013. 134e42.
+[18] Zhang S, Hu F, Zhang W. Numerical investigation on the regression rate of [39] He W, Lyu J-Y, Tang D-Y, He G-Q, Liu P-J, Yan Q-L. Control the combustion
+hybrid rocket motor with star swirl fuel grain. Acta Astronaut 2016;127: behavior of solid propellants by using core-shell Al-based composites.
+384e93. Combust Flame 2020;221:441e52.
+[19] Zhang S, Hu F, Wang D, Okolo NP, Zhang W. Numerical simulations on un- [40] He W, Tao B, Yang Z, Yang G, Guo X, Liu P-J, Yan Q-L. Mussel-inspired
+steady operation processes of N2O/HTPB hybrid rocket motor with/without polydopamine-directed crystal growth of core-shell n-Al@PDA@CuO meta-
+diaphragm. Acta Astronaut 2017;136:115e24. stable intermixed composites. Chem Eng J 2019;369:1093e101.
+[20] Debnath A, Pal Y, Mahottamananda SN, Trache D. Unraveling the role of dual [41] Fan Z, Qin Z, Deng T, Guo J, Li M, Yang X, Yin B, Li LKB, Ao W. Assessing the
+Ti/Mg metals on the ignition and combustion behavior of HTPB-boron-based ignition and combustion of a kerosene droplet containing boron nanoparticles
+fuel. Def Technol 2024;32:134e43. coated with polydopamine and polyvinylidene fluoride. Combust Flame
+[21] Koul A, Ojha A, Vimal P, Pal Y, Mahottamananda SN, S S, Trache D. 2024;263:113411.
+Enhancement of the energetic performance of solid fuels with metal- [42] Wu C, Nie J, Li S, Jiao Q, Wang D, Guo X. mAl-based reactive materials with
+fluoropolymer additives. Fire Phys Chem 2024;4(2):131e8. improved energy efficiency by using the fluorine-containing oxidizer per-
+[22] Li Q, Chen L, Huang J, Meng D, Nan F, He W. Electrostatic spraying con- fluoropolyether as an interfacial layer. Combust Flame 2023;248:112554.
+struction strategy and performance of NGEC-based core-shell nanoenergetic [43] Zhao X, Li J, Quan S, Fu X, Meng S, Jiang L, Fan X. Study on the effect of solvent
+material. Fire Phys Chem 2023;3(1):48e53. on cocrystallization of CL-20 and HMX through theoretical calculations and
+[23] Paravan C, Verga A, Maggi F, Galfetti L. Accelerated ageing of micron- and experiments. RSC Adv 2022;12(33):21255e63.
+nano-sized aluminum powders: metal content, composition and non- [44] DeLuca LT, Annovazzi A. Survey of burning rate measurements in small solid
+isothermal oxidation reactivity. Acta Astronaut 2019;158:397e406. rocket motors. Fire Phys Chem 2024;4(2):146e65.
+[24] Kou Y, Zhang G, Xiao L, Luo P, Xin Y, Hu Y, Yang J, Gao H, Zhao F, Jiang W, [45] Chen S, Tang Y, Yu H, Bao L, Zhang W, DeLuca LT, Shen R, Ye Y. The rapid H2
+Hao G. Correlation of efficient dispersion and catalytic performance of release from AlH3 dehydrogenation forming porous layer in AlH3/hydroxyl-
+nanocombustion catalysts in energetic materials: a case study of the nano- terminated polybutadiene (HTPB) fuels during combustion. J Hazard Mater
+copper oxide catalyst with superfine ammonium perchlorate. Langmuir 2019;371:53e61.
+2023;39(49):18031e42. [46] Chen S, Tang Y, Yu H, Guan X, DeLuca LT, Zhang W, Shen R, Ye Y. Combustion
+[25] Kou Y, Luo P, Xiao L, Xin Y, Zhang G, Hu Y, Yang J, Gao H, Zhao F, Jiang W, enhancement of hydroxyl-terminated polybutadiene by doping multiwall
+Hao G. New insights in nano-copper chromite catalyzing ultrafine AP: eval- carbon nanotubes. Carbon 2019;144:472e80.
+uation of dispersity and mixing uniformity. Def Technol 2024;32:120e33. [47] Lu Q, Hu Y, Yang J, Yang H, Xiao L, Zhao F, Gao H, Jiang W, Hao G. Thermal
+[26] Tang K, Chen X, Tang Z, Qin Z, Xu K, Shen R, Zhao T, Chen S. Ignition per- decomposition mechanism of ammonium nitrate on the main crystal surface
+formance and mechanism of Ti/CuFe2O4 composites with high microwave of ferric oxide: experimental and theoretical studies. Langmuir 2024;40(4):
+sensitivity. Ceram Int 2024;50(17, Part A):29256e67. 2198e209.
+[27] Deonikar VG, Kim H. Energetic fuel applicability of waste-derived active Al@ [48] Ji J, Liang L, Xu H, Xiang G, Li H, Li P, Zhou X, Guo X. Facile solvent evaporation
+FOC/PIL micro-assemblies supported by Fe and Ni with enhanced combustion synthesis of core-shell structured Al@PVDF nanoparticles with excellent
+properties through modulated surface-thermochemical reactions. Powder corrosion resistance and combustion properties. Combust Flame 2022;238:
+Technol 2024;443:119917. 111925.
+[28] He W, Lyu J-Y, Tang D-Y, He G-Q, Liu P-J, Yan Q-L. Control the combustion [49] Yan L, Zhu B, Chen J, Sun Y. Study on nano-boron particles modified by PVDF
+behavior of solid propellants by using core-shell Al-based composites. to enhance the combustion characteristics. Combust Flame 2023;248:112556.
+Combust Flame 2020;221:441e52. [50] Wang R, Zhang L, Li X, Zhu L, Xiang Z, Xu J, Xue D, Deng Z, Su X, Zou M. High-
+[29] Wu X, Ren H, Xie L. Enhancement of aluminum powder reaction behavior at performance aluminum fuels induced by monolayer self-assembly of nano-
+high temperaturesdaluminum powders with “sea urchin structure” coated sized energetic fluoride vesicles on the surface. Adv Sci 2024;11(26):2401564.
+by AP. Fuel 2024;375:132596. [51] Qin Y, Yu H, Wang D, Song Y, Li F, Liu J. Preparation and characterization of
+[30] Zhou Z, Chai L, Zhang Y, Wang Y, Du Z, Wang T, Liu Y. Experimental study on energetic composite films with mutual reactions based on B/PVDF mosaic
+oxidation and shell-breaking characteristics of individual aluminum particles structure. Chem Eng J 2023;451:138792.
+at high temperature. Powder Technol 2024;431:119087. [52] Xia H, Wang N, Yang J, Wu Y. Investigation of dynamic mixing combustion
+[31] Duan B, Mo H, Tan B, Xu M, Lu X, Liu N, Wang B. In situ coating of energetic characteristics in variable thrust hybrid rocket motors. Combust Flame
+crystals: a compact core-shell structure with highly reduced sensitivity. Fire 2023;250:112637.
+Phys Chem 2023;3(2):89e97. [53] Sun X, Tian H, Yu N, Cai G. Regression rate and combustion performance
+[32] Wu Z, Liu J, Zhang S, Liu X, Xu X, Ma W, Li S, He C. Enhanced thermal- and investigation of aluminum metallized HTPB/98HP hybrid rocket motor with
+impact-initiated reactions of PTFE/Al energetic materials through ultrasonic- numerical simulation. Aero Sci Technol 2015;42:287e96.
+assisted core-shell construction. Def Technol 2022;18(8):1362e8. [54] Guo Z, Tian H, Wang Z, Meng X, Cai G. Numerical and experimental study on
+[33] Mulamba O, Pantoya ML. Exothermic surface Chemistry on aluminum parti- 95% hydrogen peroxide catalytic ignition of hybrid rocket motors with HTPB-
+cles promoting reactivity. Appl Surf Sci 2014;315:90e4. based aluminum additive fuel. Acta Astronaut 2022;195:98e108.
+[34] Li Y, Li J, Wang B, Ma H, Han Z. An approach to the induced reaction mech- [55] Yu H, Chen S, Yu X, Zhang W, Paravan C, DeLuca LT, Shen R. Nickel acetyla-
+anism of the combustion of the nano-Al/PVDF composite particles. Surf Coat cetonate as decomposition catalyst for HTPB-based fuels: regression rate
+Technol 2022;429:127912. enhancement effects. Fuel 2021;305:121539.
+[35] Mahottamananda SN, Pal Y, Sriram YS, S S, Trache D. Evaluating ignition and
+70

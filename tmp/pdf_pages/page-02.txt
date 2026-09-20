@@ -1,0 +1,251 @@
+Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
+the fuel matrix [15,16], which is essential for maintaining consistent with double core-shell structured particles into the photocured fuel
+combustion performance and preventing hotspots or uneven matrix, leveraging the controlled synthesis of mAl@PDA@PVDF
+regression associated with non-uniform distribution. Armold et al. (denoted as mAl@PF) samples using polydopamine (PDA) as in-
+[17] conducted experiments on swirl-star fuels, investigating their terfaces. The integration of these particles into 3D printed solid
+performance in hybrid rocket motor, analysing internal ballistic and fuels is expected to significantly impact the thermal properties and
+regression rates. Zhang et al. [18,19] carried out three-dimensional combustion characteristics of the fuels. This research focuses on
+numerical models to study regression rates distribution in spiral- evaluating the influence of varying mAl-based composite particle
+star grains, corroborating findings from Armold et al. [17]. Com- content on the combustion properties of the fuel. Laboratory-scale
+parisons between star swirl and tube grains, with identical port combustion tests were conducted on cylindrical grains with
+areas and grain lengths, revealed a significant increase in burning different composite particle contents to determine regression rates
+surface area (up to 200% increasement) and spatially averaged and thermal oxidation properties. The findings from this study aim
+regression rate (about 60%). In summary, 3D printing technology to provide novel insights into the advancement of aluminum-based
+has matured, enabling the fabrication of solid fuels with homoge- hybrid fuels, with the ultimate goal of enhancing their regression
+neous composition, intricate structures, high geometric precision, rates and overall energy performance.
+and unexpected combustion performance.
+Despite these advancements, the formulations of printed fuels
+2. Experimental section
+have been found to be somewhat repetitive, potentially limiting the
+effectiveness of combustion characteristic modifications. A viable
+2.1. Molecular dynamics simulation conditions
+method for enhancing combustion characteristics involves altering
+the chemical compositions of the solid fuels. A range of energetic
+In order to gain a deeper understanding of the interactions at
+particles, including boron particles, nanothermite, aluminum par- the interface between the coating materials and the mAl particles,
+ticles, and others, have been investigated [20e22]. Among all en- the molecular dynamics simulations at the mAl particles-
+ergetic powders, aluminum (Al) particle additives distinguish polydopamine interface, mAl particles-poly (vinylidene difluoride)
+themselves primarily due to their high density, stability, low cost, interface, and the mAl@polydopamine-poly (vinylidene difluoride)
+and elevated heat of oxidation [23e26]. However, the reactivity of
+interface have been calculated by molecular dynamics simulations
+pure aluminum powder is frequently impaired by a dense surface
+[42,43], the model construction process as depicted in Fig. S1
+oxidation layer, resulting in agglomeration and diminished com-
+(Supplementary material). Due to the presence of a layer of
+bustion efficiency [27e30]. In this context, surface modification of
+micron aluminum powder with fluoropolymers presents a prom-
+a
+w
+lu
+as
+m
+u
+in
+se
+iu
+d
+m
+to
+o
+s
+x
+u
+id
+bs
+e
+ti
+o
+tu
+n
+te
+th
+f
+e
+or
+su
+m
+r
+A
+f
+l
+ac
+a
+e
+s t
+o
+h
+f
+e
+th
+b
+e
+as
+a
+e
+lu
+la
+m
+ye
+in
+r
+iu
+of
+m
+th
+p
+e
+o
+m
+wd
+o
+e
+d
+r
+e
+,
+ls
+A
+.
+l2O3
+ising approach to enabling form coating of aluminum surfaces,
+The simulations were implemented by Forcite module within
+thereby disrupting the alumina shell and enhancing energy release
+the Materials Studio software, employing the COMPASS III force
+s
+e
+u
+ffi
+rf
+c
+a
+ie
+ce
+nc
+p
+y
+re
+[3
+-i
+1
+g
+,3
+n
+2
+it
+]
+i
+.
+o
+F
+n
+lu
+e
+o
+x
+r
+o
+in
+th
+e
+e
+c
+r
+a
+m
+n
+ic
+in
+r
+t
+e
+e
+a
+r
+c
+a
+t
+c
+i
+t
+on
+w
+s
+it
+(
+h
+PI
+i
+R
+n
+)
+er
+[3
+t
+3
+A
+e
+l2
+3
+O
+5
+3
+]
+s
+,
+h
+t
+e
+h
+l
+e
+ls
+re
+v
+b
+i
+y
+a field. As illustrated in Fig. S2 and Table S2, the coating/Al2O3
+interface model contained of a growth surface structure cleaved
+partially releasing their energy and exposing highly reactive Al from 5(cid:3)5(cid:3)5 Al2O3 (0 0 1) supercell layer and a polymer coating
+nuclei. Furthermore, the formation of AlF3, which has a low boiling
+layer with 30 Å vacuum containing 10 chains of poly (vinylidene
+point (1537 (cid:1)C), significantly lower than that of Al2O3 (2980 (cid:1)C), difluoride) and polydopamine. Both of these possess a similar
+which assists in exposing fresh Al nuclei and facilitating the
+number of atoms, and the end groups of each molecular chain are
+continuation of the reaction. Polyvinylidene fluoride (PVDF), which
+saturated with -H atoms for enhanced simulation accuracy. Prior to
+contains 59wt% fluorine, stands out among fluorocarbons due to its
+the dynamic simulation, all structures were optimized. Subse-
+solubility in multiple polar organic solvents, including acetone,
+quently, molecular dynamics simulation was carried out according
+N,N-dimethylformamide, and dimethyl sulfoxide. Additionally, to the optimized stable configuration. The NVT ensemble was
+time-of-flight mass spectrometry analysis has demonstrated that selected under the COMPASS forcefield, the temperature was set to
+PVDF releases F þ , HF þ , and CxHyFz at approximately 450 (cid:1)C [36,37].
+298 K, and Anderson was selected as the temperature control
+This indicates that the Al-F reaction competes with the Al-O reac-
+method. Considering the accuracy of the calculation results and
+tion, with partial aluminum combining with fluorine to retard the configuration, the total simulation time was set to 5000 ps, and the
+sintering process. This property renders PVDF ideal for uniformly time step was 1.0 fs. The first 200 ps trajectory was employed for
+coating the surface of aluminumwith a fluorinated alumina heating
+structural relaxation, and the remaining part of the trajectory was
+agent. However, the attachment of fluoride to the surface of micro
+analyzed. Electrostatic and van der Waals interactions were calcu-
+aluminum (mAl) spheres is challenging due to the weak electro-
+lated using the Ewald and atom-based methods respectively, with a
+static interaction between fluorine and aluminum. To address this
+cutoff radius of 12.5 Å.
+challenge, polydopamine (PDA) can be utilized as an intermediate
+connectivity layer, leveraging its self-polymerizing properties un-
+der alkaline conditions, as well as its excellent adhesion, abundance 2.2. Raw materials
+of functional groups, and straightforward synthesis [38]. He et al.
+[39,40] employed a polydopamine (PDA) interfacial binding layer The mAl particles were purchased from Angang Group
+through in situ polymerization to prevent further oxidation of nano Aluminum Powder Co., Ltd. (Anshan), with an average diameter of
+aluminum (nAl) and to functionalize it with multiple chemical 3.08 mm, as shown in Fig. 1(g) and an active Al content of approx-
+groups. This approach is crucial for tailoring the combustion per- imately 65.6% as measured by thermal gravimetric analysis (TGA,
+formance of propellants, which is an important aspect of solid shown in Fig. S3). Polyvinylidene difluoride (PVDF, AR), dopamine
+propellant design. Fan et al. [41] found that the PDA coating was hydrochloride (DOPA-HCL, AR), and (hydroxymethyl) amino-
+effective at reducing moisture absorption from ambient air, methane (Tris-HCl, 2.5 mol$L (cid:4)1) were supplied by Sigma-Aldrich
+resulting in a 42.97% increase in heat release. Corp. (St. Louis, MO, USA). Ethanol (AR) and dimethylformamide
+Therefore, this study aims to incorporate highly reactive mAl (DMF, AR) were supplied by Sinopharm Chemical Reagent Co., Ltd
+(Shanghai) without further purification.
+60

@@ -1,0 +1,134 @@
+Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
+between aluminum and oxygen, and aluminum and fluorine, heating rate of 10 (cid:1)C/min. The pure Resin fuels exhibited no com-
+aluminum oxide (Al2O3) undergoes a pre-ignition reaction (PIR) bustion residue at the end of the detection temperature, corre-
+with polyvinylidene fluoride (PVDF), as referenced in literature sponding to 87.7% (Stage R1) and 12.3% (Stage R2) mass loss,
+[33e35]. This reaction breaks down the Al2O3 shell, thereby respectively. For 5%,10%, 20%, and 30% mAl/Resin fuels samples, two
+enabling the interaction of the active aluminum core with gas- main decomposition stages can also be observed of weight loss, the
+phase products decomposed by PVDF, such as CFx, CxHyFz, and HF. first stage is mainly the decomposition of the Resin matrix, and at
+When this reaction occurs in air, a competitive reaction is observed the end of stage R2 there is a combustion residue entirely generated
+between Al-O and Al-F, with the reaction equations detailed in by the oxidation of Al in system (2.6%, 7.6%, 11.7%, 19.6%). Since the
+Eqs.(4) and (5). oxidative weight gain of Al occurs throughout the slow oxidation
+(cid:1) (cid:3) process, the rate of the two mass loss stages decreases with the
+ðC 2 H 2 F 2 Þ n / CxHyFz þ HFðgÞ (2) increase in Al content in the mAl/Resin system.
+As for the mAl/@PF/Resin system, besides two major exothermic
+Al O þHFðgÞ/AlF þ H O (3) stages (Stage F2, 230e460 (cid:1)C; Stage F3, 460e631 (cid:1)C), an obvious
+2 3 3 2
+weight loss peak exists in the low-temperature region Stage F1:
+ðC
+2
+H
+2
+F
+2
+Þ
+n
+/ (cid:1) CxHyFz (cid:3) þHFðgÞ þ C (4) 2
+Fi
+3
+n
+0
+a
+e
+ll
+2
+y,
+7
+c
+0
+o
+(cid:1)
+m
+C
+b
+, w
+us
+h
+ti
+i
+o
+ch
+n
+i
+r
+s
+es
+m
+id
+a
+u
+in
+e
+l
+s
+y
+a
+c
+t
+a
+t
+u
+h
+s
+e
+ed
+en
+b
+d
+y
+o
+th
+f
+e
+op
+ev
+e
+a
+ra
+p
+t
+o
+in
+ra
+g
+ti
+t
+o
+e
+n
+m
+o
+p
+f
+e
+w
+ra
+a
+tu
+te
+r
+r
+e
+.
+(cid:1) (cid:3) are more than that of the mAl/Resin system under the condition of
+AlþHFðgÞþ CxHyFz þO
+2
+/AlF
+3
+þ Al
+2
+O
+3
+þ H
+2
+O (5)
+the same mass fraction of Al powder. The reason originates from
+two aspects: firstly, due to the presence of the PVDF coating, which
+deepens the oxidization process of Al; in addition, part of the Al
+combines with the F atoms to generate AlF3 with higher molecular
+3.4. Thermal analysis of composite fuels
+mass that Al2O3.
+The endothermic and exothermic processes of 5%,10%, 20%, and
+Thermal behaviour characterization of the epoxy acrylic com- 30% mAl/Resin and mAl@PF/Resin systems are clearly illustrated in
+posite fuels is shown in Fig. 7, tested in oxygen atmosphere at a
+Fig. 7. Thermal analysis of composite fuels. (a1) DSC; (a2) TG; (a3) DTG of mAl/Resin; (b1) DSC; (b2) TG; (b3) DTG of mAl@PF/Resin.
+66

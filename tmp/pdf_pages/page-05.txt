@@ -1,0 +1,22 @@
+Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
+Fig. 2. (a) The schematic illustration for the manufacture of fuel grains; (b) The real pictures of printed fuels loaded with and without solid fillers; (c) mCT images of S30; (d) mCT
+images of R30.
+Table 1
+Composition of 3D print fuels.
+Samples mAl@PF Pure mAl EA EOEOEA TPO Other auxiliaries
+Pure Resin 0 0 73.0% 16.0% 3.0% 8.0%
+10% mAl@PF/Resin 10.0% 0 65.7% 14.4% 2.7% 7.2%
+10% mAl/Resin 0 10.0% 65.7% 14.4% 2.7% 7.8%
+30% mAl@PF/Resin 30.0% 0 51.1% 11.2% 2.1% 5.6%
+30% mAl/Resin 0 30.0% 51.1% 11.2% 2.1% 5.6%
+stabilization of adsorption onto solid surfaces. Based on the calcu- element distribution, and core-shell structure of aluminum powder
+lation results, it is suggested that PDA, serving as the intermediate samples. Figs. 1(b)e1(f) depicts the SEM images of mAl, mAl@PDA,
+layer, acts as a "double-sided adhesive", enhancing both the and mAl@PF particles, along with their respective element and
+adsorption force to the inner Al2O3 layer and the adsorption effect particle size distributions. The mAl particles' surface exhibits a
+on the outer PVDF layer. This verifies the suitability of PDA as the highly smooth and spherical shape. Following the self-assembly
+interfacial modification layer for mAl. and non-solvent coating process, the surface of the aluminum
+powder becomes rougher, with a few polymers evidently pro-
+3.2. Characterization of morphology and composition truding in the adhesions among particles. Additionally, the average
+particle sizes of mAl, mAl@PDA, and mAl@PF particles were measured
+SEM-EDS were used to characterize the surface morphology, to be 3.08 mm, 3.30 mm, and 3.41 mm, respectively, indicating an
+63

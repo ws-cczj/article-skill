@@ -1,0 +1,71 @@
+Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
+conditions, which can form PDA coatings on the surface of mAl Thermogravimetric analysis and differential scanning calorimetry
+microspheres. The self-polymerization includes both oxidative (TG-DSC, PerkinElmer STA 6000) were used to study the
+polymerization of dopamine and physical self-assembly pathways, exothermic characteristics of mAl@Coating particles and solid fuels
+as shown in Fig. 1(a). Specifically, 10 g of Al powder together with (x% mAl@Coating/Resin) composed of different components of
+0.4 g of DOPA-HCl powder were put into 200 mL of deionized water mAl@Coating. The test was conducted from 35 (cid:1)C to 1300 (cid:1)C with a
+(Al: DA ¼ 25:1, DA ¼ 2 g/L). Tris-HCl reagent was added to adjust heating rate of 10 k$min (cid:4)1, and the oxygen flow rate was main-
+the pH to approximately 8.5. The mixture was kept at a temperature tained at 50 mL$min (cid:4)1.
+of 25 (cid:1)C and stirred at 350 rpm for 12 h. Finally, the mixture was
+filtered and dried to obtain the mAl@PDA powder. The dissolution- 2.6. Combustion diagnosis
+recrystallization method was used to prepare the core-double-shell
+structure mAl@PDA@PVDF (denoted as mAl@PF), as illustrated in Combustion tests of the 3D printed fuel grains were conducted
+Fig. 1. 50 mg of PVDF powder was dissolved in 50 mL of DMF so- in the 2D radial hybrid combustion stand, originally designed by
+lution by ultrasonication at 40 (cid:1)C for 30 min to form transparent the Space Propulsion Laboratory (SPLab) at Politecnico di Milano,
+solution. Subsequently, 1 g of pre-prepared mAl@PDA particles and Italy [44,45] (Fig. 3). Pure gaseous oxygen replaced liquid oxygen in
+300 mL of ethanol were added to the DMF solution at a rate of 20 the laboratory setup, with the Grylls 5920 mass flowmeter con-
+drops per minute, resulting in mAl@PDA@PVDF with a PVDF mass trolling the oxygen flow rate. The combustion configuration
+fraction of 4.76%. Ultimately, freeze-drying was employed to elim- featured four explosion-proof glass windows positioned at the
+inate excess solvent and prevent agglomeration of the mAl@PF oxidizer injection and rear ends, providing optical access for
+particles. monitoring burning time using a high-speed camera, specifically
+the Revealer X190 M/C. Rapid and non-intrusive ignition of the
+2.4. Preparation of 3D print fuels specimens was achieved through a nichrome wire spark ignition
+system. Gaseous nitrogen served dual purposes: maintaining a
+3D print fuel samples were manufactured through bottom-up stable pressure of around 1.0 MPa within the combustion chamber
+Vat-photopolymerization technology, involving the successive and terminating the combustion process. The nitrogen flow was
+printing of layers to create products at the Xi'an Modern Chemistry managed by an automated control system equipped with a pres-
+Research Institute in Xi'an, PRC, as depicted in Fig. 2(a). Two types sure transmitter and a solenoid valve.
+of photocurable resin-based fuels, circular tubular (labelled R) and A time-resolved technique was used for the regression rate (rf)
+spiral star port (labelled S), were printed. Fuels without solid ad- determination. This data reduction procedure enables the identi-
+ditives, served as the baselines for comparisons. All fuel composi- fication of relevant ballistic parameters (including the oxidizer
+tion details are provided in Table 1, and the detailed geometry mass flux, Gox). Full details of the method are reported both in
+parameters of circular tubular design and spiral star port design, supplementary material and elsewhere [45,46]. At least three
+designed via the 3D drawing software Unigraphics NX are shown in combustion tests were conducted for each fuel formulation. Indi-
+Fig. S4. The software, Ultimaker Cura, was used to convert the CAD vidual test data were aggregated into an ensemble average curve,
+model to the STL file format suitable for 3D printing. which allowed for the definition of error bars based on the standard
+In this study, UV light at 355 nm was employed with a preset deviation and ensured statistical significance.
+laser power of 200 mW, and the first layer exposure time was set to
+60 s to ensure successful printing. After each laser operation, the 3. Results and discussion
+build platform ascended 12 cm to ensure full levelling of the resin
+layers, then descended to the last print plane from a position of 3.1. Binding energy
+35 mm and exposed for 3 s. Finally, an acetone solution is used to
+remove the residue from the surface of the printed samples. Binding energy can be used to characterize the binding strength
+Fig. 2 depicts real pictures (b) and mCT images of S30 (c) and R30 between interfaces, where binding energy (Ebind) can be defined as
+(d) with 30% content of solid fillers. The observations reveal that the the negative value of interaction energy (Einter). In this study, in
+fabricated light-curing grains exhibit high geometric accuracy, with order to explore the potential interface enhancement effect of PDA
+clearly visible internal passages that align well with the CAD design surface modification between mAl and PVDF, the binding energy
+drawings. Additionally, the cross-section is smooth and flat; how- between Al2O3 and PDA, Al2O3 and PVDF, and Al2O3@PDA and PVDF
+ever, some unavoidable ripples are present between the axial were calculated respectively, and the calculation formulas are as
+layers. Eq.(1):
+(cid:1) (cid:3)
+2.5. Characterization E ¼ (cid:4)E ¼ (cid:4) E (cid:4)E (cid:4)E (1)
+bind inter total Al2O3 Coating
+The morphology, elemental distribution of mAl and mAl@Coat- where, Ebind represents the binding energy between Al and coat-
+ings, and the additive dispersion in the ResinþmAl/mAl@Coatings ings, Etotal represents the total energy between Al2O3 and coatings,
+system were evaluated using field emission scanning electron mi- E
+Al2O3
+and E
+Coating
+represents the energy of Al2O3 and coatings,
+croscopy (SEM, JSM-7600F). X-ray photoelectron spectroscopy respectively, which are tabulated in Table 2.
+(XPS, Thermo SCIENTIFIC ESCALAB Xi) and Fourier transform Fig. 4 illustrates the initial structures and equilibrium structures
+infrared spectroscopy (ATR-FTIR, Bruker NICOLET iS10) were used of the interfaces between Al2O3/PDA, Al2O3/PVDF and Al2O3@PDA/
+to characterize the surface element valence and elemental PVDF. The substantial difference in binding energies,
+composition of the sample. During XPS characterization, the 7931.0 kJ$mol (cid:4)1 for Al2O3/PDA, 3251.8 kJ$mol (cid:4)1 for Al2O3/PVDF,
+chamber pressure was maintained at the magnitude of 10 (cid:4)10 mbar, and 12945.2 kJ$mol (cid:4)1 for Al2O3@PDA/PVDF, underscores the ne-
+and all the binding energies were referenced to the C1s peak at cessity of utilizing PDA as an intermediate layer, in consistent with
+284.8 eV. X-ray diffraction analysis (XRD, Rigaku smartLab SE) was the literature [42,47]. It is suggested that Al2O3 exhibits stronger
+carried out in the 2q range of 5(cid:1)e90(cid:1) with Cu-Ka1 radiation affinity for the PDA coating than for the PVDF coating, due to the
+(l ¼ 1.5406 Å) to study the structural and compositional informa- rich presence of hydroxyl groups, amino groups, and other elec-
+tion of the mAl, mAl@Coating, and fuels before and after combustion. tronegative functional groups in PDA layer facilitates effective
+62
