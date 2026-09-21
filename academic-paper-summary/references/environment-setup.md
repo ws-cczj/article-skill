@@ -48,7 +48,7 @@ soffice --headless --convert-to pdf --outdir ./rendered ./summary.docx
 
 确认PDF确实生成，再用PyMuPDF渲染页面并逐页检查。不可将原论文PDF的渲染误当成所生成Word的排版检查。若已有同名旧PDF，使用新的输出目录避免把旧文件当作本次导出结果。
 
-所需字体是宋体（SimSun）和Times New Roman；其他平台不保证预装。用户应安装自己有权使用的字体，不随skill分发字体文件。Word里填写字体名称不能证明渲染器拥有该字体；缺字体时不能悄悄替换并声称满足要求。预检查Windows字体注册表，其他平台优先用`fc-list`；无法确认时在实际渲染环境核查。
+所需字体是宋体（SimSun）、楷体（KaiTi）和Times New Roman；其他平台不保证预装。用户应安装自己有权使用的字体，不随skill分发字体文件。Word里填写字体名称不能证明渲染器拥有该字体；缺字体时不能悄悄替换并声称满足要求。预检查Windows字体注册表，其他平台优先用`fc-list`；无法确认时在实际渲染环境核查。
 
 ## 缺项处理
 

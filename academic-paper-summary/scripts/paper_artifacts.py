@@ -64,9 +64,17 @@ def initialize(pdf, output_root, name=None):
     shutil.copy2(source, root/'source/paper.pdf')
     save_json(root/'manifest.json',dict(schema_version=1, source_pdf='source/paper.pdf',original_name=source.name, page_count=len(pages)))
     save_json(root/'source/pages.json',pages)
+    save_json(root/'source/figure_mentions.json',figure_mentions(pages))
     (root/'source/text.txt').write_text('\n\n'.join(f'=== Page {p["page"]} ===\n{p["text"]}' for p in pages),encoding='utf-8')
     save_json(root/'draft/report.json',dict(title_zh='',identity_images=[],background=[],methods=[],conclusions=[],innovations=[],citation='',citation_metadata={}))
     return root
+
+
+def figure_mentions(pages):
+    """Candidate references only; not a panel classifier or substitute for reading."""
+    pattern=re.compile(r'\b(?:fig(?:ure)?s?\.?)[ \t\n]*\d+[ \t]*(?:\([a-z]\d*\)|[a-z]\d*(?![a-z]))?(?:\s*[-–,]\s*(?:\([a-z]\d*\)|[a-z]\d*(?![a-z])))?',re.I)
+    return [dict(page=p['page'],mention=m.group(),context=p['text'][max(0,m.start()-120):m.end()+180])
+            for p in pages for m in pattern.finditer(p['text'])]
 
 
 def crop(root, page_number, box, label, dpi=240):
@@ -167,14 +175,22 @@ def render_pages(root, pdf_relative, pages, dpi=110):
     import fitz
     if not 72 <= dpi <= 600:
         raise ValueError('DPI must be between 72 and 600')
-    out=root/'review'/f'pages_{uuid4().hex[:8]}'
-    with fitz.open(inside(root,pdf_relative)) as doc:
+    source=inside(root,pdf_relative)
+    # Reuse identical renders only within this paper, keyed by PDF bytes, DPI and renderer.
+    key=hashlib.sha256(f'{digest(source)}:{dpi}:{fitz.VersionBind}'.encode()).hexdigest()[:24]
+    out=root/'review'/f'pages_{key}'
+    with fitz.open(source) as doc:
         indices=pages or list(range(1,len(doc)+1))
         if any(i<1 or i>len(doc) for i in indices):
             raise ValueError('Page number out of range (1-based)')
-        out.mkdir()
+        out.mkdir(exist_ok=True)
         for n in indices:
-            doc[n-1].get_pixmap(matrix=fitz.Matrix(dpi/72,dpi/72),colorspace=fitz.csRGB,alpha=False).save(out/f'page-{n:03}.png')
+            target=out/f'page-{n:03}.png'
+            stamp=target.with_suffix('.sha256')
+            if target.exists() and stamp.exists() and stamp.read_text()==digest(target):
+                continue
+            doc[n-1].get_pixmap(matrix=fitz.Matrix(dpi/72,dpi/72),colorspace=fitz.csRGB,alpha=False).save(target)
+            stamp.write_text(digest(target))
     return out
 
 
@@ -217,6 +233,7 @@ def validate_content(root, data):
     validate_citation(data)
     texts=[data['title_zh'],*data['background'],*data['innovations']]
     images=list(data['identity_images'])
+    next_figure=1
     for section in ['methods','conclusions']:
         if not isinstance(data.get(section),list) or not data[section]:
             raise ValueError(f'{section} must contain at least one subsection')
@@ -229,7 +246,13 @@ def validate_content(root, data):
             for figure in item.get('figures',[]):
                 if not nonempty(figure.get('caption')) or not isinstance(figure.get('number'),int) or figure['number']<1:
                     raise ValueError('Each figure needs a positive number, image and Chinese caption')
+                if figure['number'] != next_figure:
+                    raise ValueError(f'Figures must follow report appearance order, expected {next_figure}; store original PDF numbering in source_figure only')
+                next_figure+=1
                 texts.append(figure['caption']);images.append(figure['image'])
+    if not any(item.get('figures') for item in data['methods']):
+        if any(item.get('figures') for item in data['conclusions']) or not nonempty(data.get('methods_figure_absence_reason')):
+            raise ValueError('Methods need at least one figure; omission is allowed only when the source paper has no figures at all, recorded in methods_figure_absence_reason')
     if not all(nonempty(t) for t in texts):
         raise ValueError('All content paragraphs must be nonempty strings')
     for t in texts:
@@ -286,10 +309,13 @@ def build(root, content='draft/report.json'):
         width=min(16.6,max_height*w/h)
         p=doc.add_paragraph();p.alignment=WD_ALIGN_PARAGRAPH.CENTER
         p.add_run().add_picture(str(path),width=Cm(width))
+    figure_number=0
     def figures(items):
+        nonlocal figure_number
         for f in items:
+            figure_number+=1
             picture(f['image'],17)
-            paragraph(f'图{f["number"]} {f["caption"]}','Caption')
+            paragraph(f'图{figure_number} {f["caption"]}','Caption')
     paragraph(data['title_zh'],'Heading 1')
     for identity in data['identity_images']:picture(identity,8)
     paragraph('一、研究背景','Heading 2')
@@ -310,6 +336,9 @@ def build(root, content='draft/report.json'):
     field=OxmlElement('w:fldSimple');field.set(qn('w:instr'),'PAGE');footer._p.append(field)
     doc.core_properties.title=data['title_zh']
     output=unique_file(root/'final','summary','.docx');doc.save(output)
+    save_json(root/'review'/f'{output.stem}-figure-map.json',[
+        dict(number=f['number'],source_figure=f.get('source_figure'),image=f['image'])
+        for section in ['methods','conclusions'] for item in data[section] for f in item.get('figures',[])])
     return output
 
 

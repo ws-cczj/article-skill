@@ -28,7 +28,7 @@ Default to two groups: keep ALL material/specimen preparation, processing and fa
 
 Number method subsections 1, 2, 3 independently, never 2.1, 2.2. Keep each category to a concise paragraph where practical, covering actual work and essential conditions without tutorial detail.
 
-Insert a workflow/apparatus figure here only when it helps explain the method and the teacher requires images.
+The methods section must include at least one figure. Prefer preparation, specimen, apparatus or model illustrations, but absence of a dedicated methods diagram is NOT an exemption: select another source figure that best explains the study object, observation or test, and describe its actual content. Omit only when the source paper contains no figures at all; record that finding in methods_figure_absence_reason. Never invent or mislabel a figure.
 
 ### 三、主要结论
 
@@ -40,8 +40,10 @@ Order findings by their actual evidentiary relationships: observed changes, comp
 
 1. a heading stating a concrete observed change, comparison, relationship or supported mechanism, not a generic method assessment;
 2. an evidence paragraph with the key trend/value and conditions;
-3. the associated figure/table and caption when required; explain every labeled panel in original (a), (b), (c) order in both text and caption before synthesizing the finding;
+3. the associated figure/table and caption when required; first distinguish actual panels from region/point labels using source captions, prose references and layout; explain confirmed panels in original (a), (b), (c) order in both text and caption before synthesizing the finding;
 4. a limitation or scope statement where needed.
+
+Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.
 
 This section is where key figure analysis belongs. Do not create a detached figure-analysis chapter by default.
 

@@ -64,6 +64,7 @@ def font_checks() -> list[dict]:
             except OSError:
                 continue
         simsun = any(n == "simsun.ttc" or n.startswith("simsun ") or n.startswith("simsun &") or n.startswith("宋体 ") for n in names)
+        kaiti = any(n == "simkai.ttf" or n.startswith("kaiti (") or n.startswith("楷体 (") for n in names)
         times = any(n == "times.ttf" or n.startswith("times new roman (") for n in names)
     else:
         command = shutil.which("fc-list")
@@ -74,8 +75,9 @@ def font_checks() -> list[dict]:
             except (OSError, subprocess.SubprocessError):
                 pass
         simsun = bool(names & {"simsun", "宋体"})
+        kaiti = bool(names & {"kaiti", "楷体"})
         times = "times new roman" in names
-    return [dict(name=name, status="DETECTED" if found else "UNKNOWN", detail="Font name detected; confirm actual document rendering" if found else "Not confirmed. Install a properly licensed font or verify via the renderer; do not silently substitute") for name, found in (("SimSun / 宋体", simsun), ("Times New Roman", times))]
+    return [dict(name=name, status="DETECTED" if found else "UNKNOWN", detail="Font name detected; confirm actual document rendering" if found else "Not confirmed. Install a properly licensed font or verify via the renderer; do not silently substitute") for name, found in (("SimSun / 宋体", simsun), ("KaiTi / 楷体", kaiti), ("Times New Roman", times))]
 
 
 def smoke_check() -> dict:

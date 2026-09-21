@@ -17,6 +17,7 @@ outputs/日期时间_论文名_短标记/
   manifest.json          本文源文件与工作区信息
   source/paper.pdf        原论文副本，保持不变
   source/pages.json       每页尺寸、旋转与提取文字
+  source/figure_mentions.json  候选图/子图引用与页码上下文（非自动判定）
   source/text.txt         分页文本辅助阅读
   assets/                题名截图、结论图、每张裁图的来源坐标记录
   draft/report.json      Agent填写的事实、正文、图注与图片路径
@@ -62,7 +63,7 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
     {
       "heading": "材料设计与制备",
       "paragraphs": ["简短方法正文"],
-      "figures": []
+      "figures": [{"number": 1, "source_figure": "所选原文图号", "image": "assets/method-001.png", "caption": "所选图片的实际内容及与方法的关系"}]
     }
   ],
   "conclusions": [
@@ -70,7 +71,7 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
       "heading": "具体结果型标题，不写编号",
       "paragraphs": ["按(a)、(b)、(c)逐项说明的结果正文"],
       "figures": [
-        {"number": 2, "image": "assets/figure2-001.png", "caption": "图像内容。（a）单独说明；（b）单独说明；（c）单独说明。"}
+        {"number": 2, "source_figure": "原文对应图号，仅内部使用", "image": "assets/figure2-001.png", "caption": "图像内容。（a）单独说明；（b）单独说明；（c）单独说明。"}
       ]
     }
   ],
@@ -86,11 +87,13 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
 }
 ```
 
-`heading`和创新点不带序号；方法、结论由脚本各自从1编号。`caption`不带“图2”前缀，脚本根据number加入中文图号。caption中子图顺序由Agent核对，程序不能代替读图。图片路径相对于论文目录，不能引用其他论文目录。
+`heading`和创新点不带序号；方法、结论由脚本各自从1编号。`caption`不带“图2”前缀，number必须是总结实际出现的连续编号，方法图与结论图共用序列。build校验number后按出现顺序生成图号，编号错误会报错，不静默改动正文；source_figure仅记录原文图号。正文中的图X及图X(a)必须同步使用总结编号，调整图序后逐项复核。只有原文完全没有图时才允许方法节不配图，此时须填写顶层methods_figure_absence_reason，说明全文核查确无图片；此字段不进入成稿。caption中子图顺序由Agent核对，程序不能代替读图。图片路径相对于论文目录，不能引用其他论文目录。
 
 第五节仅引用当前被总结论文。上面的citation和citation_metadata都是字段示意，须全部替换为当前原文信息；不能照抄示例或旧稿。旧report.json缺少citation_metadata时，须回到本目录source/paper.pdf提取并核对，不能只复制旧citation来填充。build检查题名、年份及已填写DOI的一致性；作者、期刊、卷期与页码等仍须逐项核对源文。
 
 ## 构建与复核
+
+build另将本版本的总结图号、source_figure和图片路径保存至review/summary-XXX-figure-map.json供复核；该映射不写入成稿，也不替代Agent核对正文图号。
 
 ```text
 python "<工具>" build --workspace "<论文目录>"
@@ -106,3 +109,11 @@ python "<工具>" pages --workspace "<论文目录>" --pdf "final/summary-001.pd
 观察渲染后需要换页时，可在对应方法/结论小节增加`"page_break_before": true`，脚本将插入显式分页符；不要给所有段落套keep-with-next。修改JSON后重新build得到新版本，保留旧稿。图片不能读清时重新crop，更新路径后再build。最终选择通过内容、结构和视觉检查的版本交付。
 
 没有目标论文时不得为了演示工具生成真实论文总结。工具测试只能使用明确的合成材料和临时目录。
+
+## 保持质量的耗时优化
+
+- 优先复用init已生成的全文、分页文本和figure_mentions候选索引，不为每节重写提取脚本或重提全文。旧任务没有索引时直接检索source/text.txt即可，不要求迁移旧数据或重建目录。
+- pages已按PDF内容哈希、分辨率与渲染器版本复用当前论文目录内的页面预览；重复页不再渲染，新增页补齐，PDF或DPI变化用新缓存，缓存图片损坏则重建。缓存不代表已经看过图。
+- 先确定提纲、图序、源图映射与真实子图，再裁图和写正文，减少后期重新编号与返工。先低分辨率预览定位，最终裁片仍按原质量要求生成。
+- 保留逐图内容复核、引用身份核对及成稿逐页检查；修改裁片仍须重新复核。现有工具足够时不另写脚本。特殊PDF无法正确提取时，沿用原来的渲染/OCR和人工核验路径，不能为节省时间跳读、降低分辨率或猜测。
+- 这些优化减少重复操作，不承诺固定耗时降幅；若缓存或快捷路径不可靠，使用原流程，质量优先。

@@ -3,4 +3,8 @@ __pycache__/
 .pytest_cache/
 artifacts/
 outputs/
-.tmp/
+tmp/
+
+# Local runtime and generated distribution archive
+.venv/
+article-skill.zip

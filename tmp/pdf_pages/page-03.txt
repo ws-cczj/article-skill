@@ -1,9 +1,0 @@
-Q. Chen, X. Fu, W. Yang et al. Defence Technology 46 (2025) 59e70
-Fig.1. The schematic illustration for the synthesis of mAl@PDA and mAl@PF (a); (b) The SEM images of mAl powder; (c) mAl@PDA; (d) mAl@PF; (e) EDS mapping images of mAl@PDA;
-(f) mAl@PF; (g) Particle size distribution of mAl; (h) mAl@PDA; (i) mAl@PF.
-The liquid light-curing resin system takes epoxy acrylic resins photopolymerization.
-(EA, MCRI) as photocurable resin, 2-(2-ethoxyethoxy)-ethyl acry-
-late (EOEOEA, Aladdin Reagent Co., Ltd., Shanghai, China) as reac- 2.3. Preparation of Al@Coatings
-tive diluent, and 2,4,6-trimethylbenzoyldiphenyl phosphine oxide
-(TPO, Sigma-Aldrich Corp. St. Louis, MO, USA) as the initiator for Dopamine is capable of self-polymerization under alkaline
-61

@@ -150,6 +150,13 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     for key in SECTION_NAMES:
         if not any(p.text and heading_level(p) is None for p in section_paragraphs(block, key)):
             errors.append(f'章节无正文：{key}')
+    figure_sequence=[]
+    for p in block.paragraphs:
+        if caption_ids(p):
+            match=re.match(r'^\s*(?:图|Fig(?:ure)?\.?)\s*(\d+)',p.text,re.I)
+            figure_sequence.append(int(match[1]))
+    if figure_sequence != list(range(1,len(figure_sequence)+1)):
+        errors.append('图号须按总结出现顺序从图1连续编号，方法与结论共用序列')
     bg = [p for p in section_paragraphs(block, 'background') if p.text and heading_level(p) is None]
     if len(bg) < 2:
         errors.append('研究背景少于2个正文段落')

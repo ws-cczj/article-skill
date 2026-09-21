@@ -26,6 +26,10 @@ def fixture():
         Paragraph('五、引用格式', 'Heading 2'), Paragraph('测试引用，2020。')])
 
 class ValidatorTests(unittest.TestCase):
+    def test_source_numbering_cannot_replace_report_sequence(self):
+        b=fixture();b.paragraphs[12].text='图7 测试图注'
+        self.assertTrue(any('连续编号' in x for x in validate_block(b,1)[0]))
+
     def test_valid_structure(self):
         self.assertEqual(validate_block(fixture(), 1)[0], [])
 

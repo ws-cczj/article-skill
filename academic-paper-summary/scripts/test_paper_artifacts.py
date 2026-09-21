@@ -6,7 +6,7 @@ import fitz
 from docx import Document
 from docx.oxml.ns import qn
 from paper_artifacts import (initialize, crop, build, inside, save_json, read_json,
-                            render_pages, inspect_crop, review_crop, crop_review_path)
+                            render_pages, inspect_crop, review_crop, crop_review_path, figure_mentions)
 
 
 class ArtifactTests(unittest.TestCase):
@@ -29,8 +29,9 @@ class ArtifactTests(unittest.TestCase):
             review_crop(self.root,image.relative_to(self.root).as_posix(),
                         'Synthetic fixture: full known geometry enclosed; external caption and body excluded.')
         self.data=dict(title_zh='中文合成测试题目',identity_images=[self.identity.relative_to(self.root).as_posix()],
-            background=['背景一','背景二'],methods=[dict(heading='测试方法',paragraphs=['测试内容'])],
-            conclusions=[dict(heading='合成测试结果',paragraphs=['测试描述'],figures=[dict(number=1,image=self.figure.relative_to(self.root).as_posix(),caption='合成图注')])],
+            methods_figure_absence_reason='',
+            background=['背景一','背景二'],methods=[dict(heading='测试方法',paragraphs=['测试内容'],figures=[dict(number=1,image=self.figure.relative_to(self.root).as_posix(),caption='合成方法图')])],
+            conclusions=[dict(heading='合成测试结果',paragraphs=['测试描述'],figures=[dict(number=2,image=self.figure.relative_to(self.root).as_posix(),caption='合成图注')])],
             innovations=['一项','二项','三项'],citation='Test A. English paper title and authors. Synthetic Journal, 2026.',
             citation_metadata=dict(original_title='English paper title and authors',authors=['Test A'],journal='Synthetic Journal',year='2026'))
         save_json(self.root/'draft/report.json',self.data)
@@ -42,12 +43,59 @@ class ArtifactTests(unittest.TestCase):
         self.assertNotEqual(a,b);self.assertEqual(a.read_bytes(),original)
         self.assertTrue(a.is_relative_to(self.root/'final'))
 
+    def test_method_figure_or_source_absence_required(self):
+        self.data['methods'][0]['figures']=[]
+        self.data['conclusions'][0]['figures'][0]['number']=1
+        self.data['methods_figure_absence_reason']='No dedicated method diagram; other source figures exist.'
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'Methods need'):build(self.root)
+
+    def test_truly_figureless_source_can_omit_methods_image(self):
+        self.data['methods'][0]['figures']=[]
+        self.data['conclusions'][0]['figures']=[]
+        self.data['methods_figure_absence_reason']='Whole synthetic paper checked: no figures at all.'
+        save_json(self.root/'draft/report.json',self.data)
+        self.assertTrue(build(self.root).is_file())
+
+    def test_figures_follow_report_order_across_sections(self):
+        f=self.data['conclusions'][0]['figures'][0]
+        self.data['methods'][0]['figures']=[dict(f,number=1,source_figure='Fig. 7')]
+        f.update(number=2,source_figure='Fig. 3')
+        del self.data['methods_figure_absence_reason']
+        save_json(self.root/'draft/report.json',self.data)
+        doc=Document(build(self.root))
+        self.assertEqual([p.text for p in doc.paragraphs if p.style.name=='Caption'],['图1 合成图注','图2 合成图注'])
+        f['number']=3
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'appearance order'):build(self.root)
+
+    def test_page_cache_reuses_and_invalidates(self):
+        out=render_pages(self.root,'source/paper.pdf',[1])
+        target=out/'page-001.png';timestamp=target.stat().st_mtime_ns
+        self.assertEqual(render_pages(self.root,'source/paper.pdf',[1]),out)
+        self.assertEqual(target.stat().st_mtime_ns,timestamp)
+        expected=target.read_bytes();target.write_bytes(b'broken')
+        render_pages(self.root,'source/paper.pdf',[1])
+        self.assertEqual(target.read_bytes(),expected)
+        self.assertNotEqual(render_pages(self.root,'source/paper.pdf',[1],dpi=120),out)
+        with fitz.open() as doc:
+            doc.new_page().insert_text((50,50),'Changed PDF')
+            doc.save(self.root/'source/changed.pdf')
+        self.assertNotEqual(render_pages(self.root,'source/changed.pdf',[1]),out)
+
+    def test_figure_reference_index_is_candidate_evidence(self):
+        items=figure_mentions([dict(page=3,text='See figure1a and Figure 1(b), Fig. 2c and Figs. 3a–c. Region ① is a location.')])
+        self.assertEqual(len(items),4)
+        self.assertTrue(all(x['page']==3 for x in items))
+        self.assertEqual(items[0]['mention'],'figure1a')
+        self.assertTrue((self.root/'source/figure_mentions.json').is_file())
+
     def test_chinese_title_and_english_screenshot_both_present(self):
         doc=Document(build(self.root))
         self.assertEqual(doc.paragraphs[0].text,'中文合成测试题目')
         self.assertTrue(doc.paragraphs[1]._p.xpath('.//a:blip'))
         self.assertEqual(doc.paragraphs[2].text,'一、研究背景')
-        self.assertEqual(len(doc.inline_shapes),2)
+        self.assertEqual(len(doc.inline_shapes),3)
 
     def test_numbering_fonts_and_no_paragraph_keep_flags(self):
         doc=Document(build(self.root))
