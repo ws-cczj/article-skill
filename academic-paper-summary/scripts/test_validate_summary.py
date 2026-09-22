@@ -26,6 +26,12 @@ def fixture():
         Paragraph('五、引用格式', 'Heading 2'), Paragraph('测试引用，2020。')])
 
 class ValidatorTests(unittest.TestCase):
+    def test_caption_without_prose_reference_warns(self):
+        b=fixture()
+        self.assertTrue(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
+        b.paragraphs[10].text='图1给出测试证据。'
+        self.assertFalse(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
+
     def test_source_numbering_cannot_replace_report_sequence(self):
         b=fixture();b.paragraphs[12].text='图7 测试图注'
         self.assertTrue(any('连续编号' in x for x in validate_block(b,1)[0]))

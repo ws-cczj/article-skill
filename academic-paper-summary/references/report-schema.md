@@ -12,7 +12,7 @@ Optional collection title: a field topic or “文献调研”. It may appear on
 
 ### Paper heading
 
-Use a formal Chinese academic title identifying the research object and topic. Follow the title examples in [example-writing-patterns.md](example-writing-patterns.md); avoid conversational instructions or promotional hooks. The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
+Use a formal Chinese academic title that distills the central research question or supported variable–response relationship. Avoid literal translation or stacking every material, geometry and test name; retain details necessary to identify scope. Do not invent a mechanism or force causal phrasing. Follow the title examples in [example-writing-patterns.md](example-writing-patterns.md); avoid conversational instructions or promotional hooks. The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
 
 ### 一、研究背景
 
