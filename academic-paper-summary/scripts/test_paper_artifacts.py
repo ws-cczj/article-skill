@@ -6,10 +6,75 @@ import fitz
 from docx import Document
 from docx.oxml.ns import qn
 from paper_artifacts import (initialize, crop, build, inside, save_json, read_json,
-                            render_pages, inspect_crop, review_crop, crop_review_path, figure_mentions)
+                            render_pages, inspect_crop, review_crop, crop_review_path, figure_mentions,
+                            edge_warnings, reject_crop)
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_final_check_rejects_wrong_or_changed_artifact(self):
+        from paper_memory import check
+        output=build(self.root)
+        relative=output.relative_to(self.root).as_posix()
+        self.data['background'][0]='内容已经修改'
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'build inputs changed'):check(self.root,relative)
+        output=build(self.root)
+        output.write_bytes(output.read_bytes()+b'changed')
+        with self.assertRaisesRegex(ValueError,'build inputs changed'):
+            check(self.root,output.relative_to(self.root).as_posix())
+        with self.assertRaisesRegex(ValueError,'Missing build receipt'):
+            check(self.root,'source/text.txt')
+
+    def test_source_change_invalidates_crop_and_review(self):
+        image=self.figure.relative_to(self.root).as_posix()
+        source=self.root/'source/paper.pdf'
+        source.write_bytes(source.read_bytes()+b'changed')
+        with self.assertRaisesRegex(ValueError,'stale'):build(self.root)
+        with self.assertRaisesRegex(ValueError,'changed'):
+            review_crop(self.root,image,'An old crop cannot be approved against a changed source.')
+        with self.assertRaisesRegex(ValueError,'source changed'):inspect_crop(self.root,image)
+
+    def test_schema_rejects_string_paragraphs_and_boolean_figure_number(self):
+        self.data['methods'][0]['paragraphs']='必须是段落数组'
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'paragraphs array'):build(self.root)
+        self.data['methods'][0]['paragraphs']=['方法内容']
+        self.data['methods'][0]['figures'][0]['number']=True
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'positive number'):build(self.root)
+
+    def test_memory_final_check_binds_artifact(self):
+        from paper_memory import check,sha
+        output=build(self.root)
+        result=check(self.root,output.relative_to(self.root).as_posix())
+        self.assertEqual(result['status'],'memory_clear')
+        self.assertEqual(result['artifact_sha256'],sha(output))
+        self.assertEqual(result['content_sha256'],sha(self.root/'draft/report.json'))
+
+    def test_crop_rejection_creates_memory_issue(self):
+        from paper_memory import check
+        reject_crop(self.root,self.figure.relative_to(self.root).as_posix(),'Synthetic cropped label requires a corrected source crop.')
+        self.assertTrue(check(self.root)['blockers'])
+
+    def test_raster_edge_ink_warning(self):
+        from PIL import Image,ImageDraw
+        path=self.parent/'edge.png'
+        im=Image.new('RGB',(100,100),'white');ImageDraw.Draw(im).rectangle((0,30,20,50),fill='black');im.save(path)
+        self.assertEqual([w['edge'] for w in edge_warnings(path)],['left'])
+
+    def test_rejected_bytes_cannot_be_reapproved_or_renamed(self):
+        image=self.figure.relative_to(self.root).as_posix()
+        reject_crop(self.root,image,'Synthetic rejected image: known crop boundary defect.')
+        with self.assertRaisesRegex(ValueError,'Rejected crop'):build(self.root)
+        inspect_crop(self.root,image)
+        with self.assertRaisesRegex(ValueError,'Rejected crop'):
+            review_crop(self.root,image,'Attempting to approve identical rejected bytes should fail.')
+        renamed=self.root/'assets/renamed.png';renamed.write_bytes(self.figure.read_bytes())
+        renamed.with_suffix('.json').write_bytes(self.figure.with_suffix('.json').read_bytes())
+        inspect_crop(self.root,'assets/renamed.png')
+        with self.assertRaisesRegex(ValueError,'Rejected crop'):
+            review_crop(self.root,'assets/renamed.png','Renaming rejected bytes cannot make them acceptable.')
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)

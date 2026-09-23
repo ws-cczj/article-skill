@@ -26,9 +26,16 @@ def fixture():
         Paragraph('五、引用格式', 'Heading 2'), Paragraph('测试引用，2020。')])
 
 class ValidatorTests(unittest.TestCase):
-    def test_caption_without_prose_reference_warns(self):
+    def test_repeated_figure_led_prose_warns_without_treating_it_as_caption(self):
+        b=fixture();b.paragraphs[10]=Paragraph('图1 上排展示形貌。','Normal')
+        b.paragraphs.insert(11,Paragraph('图1 下排展示另一组。','Normal'))
+        self.assertTrue(any('读图清单' in x for x in validate_block(b,1)[1]))
+        b.paragraphs[10].text='处理后损伤减轻，比较见图1。'
+        self.assertFalse(any('读图清单' in x for x in validate_block(b,1)[1]))
+
+    def test_supporting_figure_does_not_require_explicit_prose_reference(self):
         b=fixture()
-        self.assertTrue(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
+        self.assertFalse(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
         b.paragraphs[10].text='图1给出测试证据。'
         self.assertFalse(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
 

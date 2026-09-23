@@ -12,7 +12,7 @@ Optional collection title: a field topic or “文献调研”. It may appear on
 
 ### Paper heading
 
-Use a formal Chinese academic title that distills the central research question or supported variable–response relationship. Avoid literal translation or stacking every material, geometry and test name; retain details necessary to identify scope. Do not invent a mechanism or force causal phrasing. Follow the title examples in [example-writing-patterns.md](example-writing-patterns.md); avoid conversational instructions or promotional hooks. The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
+Use a concise, engaging Chinese academic title for a public-account article: lead with a supported finding, contrast or tradeoff, while clearly identifying the object. A short hook plus explanatory subtitle is acceptable. Avoid automatically settling for the flat “effect of X on Y” wording; accuracy takes priority over novelty claims. Avoid literal translation or stacking every material, geometry and test name; retain details necessary to identify scope. Do not invent a mechanism or force causal phrasing. Follow the title examples in [example-writing-patterns.md](example-writing-patterns.md); avoid conversational instructions or promotional hooks. The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author/affiliation-and-address area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
 
 ### 一、研究背景
 
@@ -39,8 +39,8 @@ Restart result subsection numbering at 1, 2, 3, never 3.1, 3.2.
 Order findings by their actual evidentiary relationships: observed changes, complementary evidence, supported explanation, and consequences or conditions where present. Preserve parallel findings and avoid invented causality. One finding may combine several figures. Each subsection contains:
 
 1. a heading stating a concrete observed change, comparison, relationship or supported mechanism, not a generic method assessment;
-2. an evidence paragraph with the key trend/value and conditions;
-3. the associated figure/table and caption when required; first distinguish actual panels from region/point labels using source captions, prose references and layout; explain confirmed panels in original (a), (b), (c) order in both text and caption before synthesizing the finding;
+2. a coherent account of the finding, relevant comparisons and supported interpretation, with order and phrasing chosen for the research narrative rather than a fixed sentence template;
+3. supporting figures and captions near the relevant discussion; captions explain actual panels in source-label order, while prose references or discusses figures only as useful for understanding, without mandatory panel-by-panel coverage;
 4. a limitation or scope statement where needed.
 
 Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.

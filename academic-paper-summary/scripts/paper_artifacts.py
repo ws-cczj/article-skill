@@ -67,6 +67,8 @@ def initialize(pdf, output_root, name=None):
     save_json(root/'source/figure_mentions.json',figure_mentions(pages))
     (root/'source/text.txt').write_text('\n\n'.join(f'=== Page {p["page"]} ===\n{p["text"]}' for p in pages),encoding='utf-8')
     save_json(root/'draft/report.json',dict(title_zh='',identity_images=[],background=[],methods=[],conclusions=[],innovations=[],citation='',citation_metadata={}))
+    from paper_memory import initialize as initialize_memory, check as check_memory
+    initialize_memory(root);check_memory(root)
     return root
 
 
@@ -93,7 +95,7 @@ def crop(root, page_number, box, label, dpi=240):
             raise ValueError('Crop must be nonempty and inside the rendered page rectangle')
         output=unique_file(root/'assets',label,'.png')
         page.get_pixmap(matrix=fitz.Matrix(dpi/72,dpi/72), clip=rect, colorspace=fitz.csRGB, alpha=False).save(output)
-    save_json(output.with_suffix('.json'),dict(source=manifest['source_pdf'],page=page_number,rect=list(box),dpi=dpi,image=output.relative_to(root).as_posix()))
+    save_json(output.with_suffix('.json'),dict(source=manifest['source_pdf'],source_sha256=digest(inside(root,manifest['source_pdf'])),page=page_number,rect=list(box),dpi=dpi,image=output.relative_to(root).as_posix()))
     inspect_crop(root, output.relative_to(root).as_posix())
     return output
 
@@ -109,13 +111,58 @@ def crop_review_path(root, image):
     return folder/f'{Path(image).stem}-{key}.json'
 
 
+def edge_warnings(path):
+    """Flag ink at crop borders, including text baked into bitmaps. Heuristic only."""
+    from PIL import Image
+    with Image.open(path) as im:
+        gray=im.convert('L')
+        w,h=gray.size
+        strips={'left':(0,0,1,h),'right':(w-1,0,w,h),
+                'top':(0,0,w,1),'bottom':(0,h-1,w,h)}
+        warnings=[]
+        for side,box in strips.items():
+            histogram=gray.crop(box).histogram()
+            count=sum(histogram[:210])
+            if count>=max(3,sum(histogram)*.003):
+                warnings.append(dict(kind='ink_at_crop_edge',edge=side,
+                                     detail='Inspect for clipped labels/axes; full-bleed figures may be valid.'))
+        return warnings
+
+
+def reject_crop(root, image, reason):
+    """Remember defective image bytes even if renamed or given another review record."""
+    if len(reason.strip())<10:
+        raise ValueError('Specify the actual defect before rejecting a crop')
+    path=inside(root,image)
+    registry=root/'review/rejected-crops.json'
+    records=read_json(registry) if registry.exists() else {}
+    records[digest(path)]=dict(image=image,reason=reason.strip())
+    save_json(registry,records)
+    from paper_memory import put
+    put(root,dict(kind='issue',summary=reason.strip(),locator=image,
+                  depends_on=['draft/report.json',image]))
+    review=crop_review_path(root,image)
+    if review.exists():
+        record=read_json(review);record.update(status='rejected',note=reason.strip());save_json(review,record)
+    return registry
+
+
+def check_not_rejected(root, path):
+    registry=root/'review/rejected-crops.json'
+    if registry.exists() and digest(path) in read_json(registry):
+        raise ValueError('Rejected crop bytes cannot be reused or re-approved; recrop from source and inspect again')
+
+
 def inspect_crop(root, image):
     """Create a page-context preview and heuristic warnings; never approve a crop."""
     import fitz
     from PIL import Image, ImageDraw
     path = inside(root, image)
     meta = read_json(path.with_suffix('.json'))
-    warnings = []
+    if (meta['source'] != read_json(root/'manifest.json')['source_pdf']
+            or meta.get('source_sha256') != digest(inside(root,meta['source']))):
+        raise ValueError('Crop source changed or legacy provenance lacks source hash; recrop from the current source PDF')
+    warnings = edge_warnings(path)
     with fitz.open(inside(root, meta['source'])) as doc:
         page = doc[meta['page']-1]
         rect = fitz.Rect(meta['rect'])
@@ -149,6 +196,7 @@ def inspect_crop(root, image):
     context = review.with_suffix('.png')
     preview.save(context)
     result = dict(image=image, sha256=digest(path), provenance_sha256=digest(path.with_suffix('.json')),
+                  source_sha256=digest(inside(root, meta['source'])),
                   status='pending', context=context.relative_to(root).as_posix(), warnings=warnings,
                   note='View both the context preview and the actual crop. No warnings does not mean complete.')
     save_json(review,result)
@@ -160,11 +208,14 @@ def review_crop(root, image, note):
     if len(note.strip()) < 20:
         raise ValueError('Record concrete visual findings and resolve every warning (at least 20 characters)')
     path=inside(root,image)
+    check_not_rejected(root,path)
     review=crop_review_path(root,image)
     if not review.exists():
         raise ValueError('Run inspect-crop, then view its context preview and actual crop first')
     result=read_json(review)
-    if result['sha256'] != digest(path) or result['provenance_sha256'] != digest(path.with_suffix('.json')):
+    meta=read_json(path.with_suffix('.json'))
+    if (result['sha256'] != digest(path) or result['provenance_sha256'] != digest(path.with_suffix('.json'))
+            or result.get('source_sha256') != digest(inside(root,meta['source']))):
         raise ValueError('Crop or coordinates changed; run inspect-crop and inspect the new images again')
     result.update(status='reviewed', note=note.strip(), reviewed_at=datetime.now().isoformat())
     save_json(review,result)
@@ -222,6 +273,11 @@ def validate_citation(data):
 
 def validate_content(root, data):
     def nonempty(value): return isinstance(value,str) and bool(value.strip())
+    if not isinstance(data,dict):
+        raise ValueError('Report must be a JSON object')
+    for field in ('identity_images','background','innovations'):
+        if not isinstance(data.get(field),list) or not all(nonempty(v) for v in data[field]):
+            raise ValueError(f'{field} must be an array of nonempty strings')
     if not nonempty(data.get('title_zh')) or not re.search(r'[\u3400-\u9fff]',data['title_zh']):
         raise ValueError('title_zh must contain an editable Chinese summary title')
     if not data.get('identity_images'):
@@ -238,13 +294,18 @@ def validate_content(root, data):
         if not isinstance(data.get(section),list) or not data[section]:
             raise ValueError(f'{section} must contain at least one subsection')
         for item in data[section]:
+            if not isinstance(item,dict) or not isinstance(item.get('paragraphs'),list):
+                raise ValueError('Each subsection must be an object with a paragraphs array')
+            if not isinstance(item.get('figures',[]),list):
+                raise ValueError('figures must be an array')
             if not nonempty(item.get('heading')) or not item.get('paragraphs'):
                 raise ValueError('Each subsection needs an unnumbered heading and paragraphs')
             if re.match(r'^\s*(?:\d+[.、]|[一二三四五]+、)',item['heading']):
                 raise ValueError('Supply headings without numbering; the builder numbers each section from 1')
             texts += [item['heading'],*item['paragraphs']]
             for figure in item.get('figures',[]):
-                if not nonempty(figure.get('caption')) or not isinstance(figure.get('number'),int) or figure['number']<1:
+                if (not isinstance(figure,dict) or not nonempty(figure.get('caption'))
+                        or not nonempty(figure.get('image')) or type(figure.get('number')) is not int or figure['number']<1):
                     raise ValueError('Each figure needs a positive number, image and Chinese caption')
                 if figure['number'] != next_figure:
                     raise ValueError(f'Figures must follow report appearance order, expected {next_figure}; store original PDF numbering in source_figure only')
@@ -262,14 +323,41 @@ def validate_content(root, data):
         path=inside(root,name)
         if not path.is_file() or path.suffix.lower() not in ('.png','.jpg','.jpeg'):
             raise ValueError(f'Image missing or unsupported: {name}')
+        check_not_rejected(root,path)
         review=crop_review_path(root,name)
         if not review.exists():
             raise ValueError(f'Image needs inspect-crop and visual review: {name}')
         record=read_json(review)
         meta=path.with_suffix('.json')
         if (record.get('status') != 'reviewed' or record.get('sha256') != digest(path)
-                or not meta.is_file() or record.get('provenance_sha256') != digest(meta)):
+                or not meta.is_file() or record.get('provenance_sha256') != digest(meta)
+                or record.get('source_sha256') != digest(inside(root,read_json(meta)['source']))):
             raise ValueError(f'Image review missing or stale; inspect and review again: {name}')
+
+
+def build_inputs(root, content):
+    """Bind an output to its actual source, content, images and crop provenance."""
+    data=read_json(inside(root,content))
+    names=[content, 'manifest.json', read_json(root/'manifest.json')['source_pdf']]
+    images=list(data['identity_images'])
+    images += [f['image'] for section in ('methods','conclusions')
+               for item in data[section] for f in item.get('figures',[])]
+    for name in images:
+        names.extend([name,Path(name).with_suffix('.json').as_posix()])
+    return {name:digest(inside(root,name)) for name in dict.fromkeys(names)}
+
+
+def verify_build(root, artifact, content):
+    path=inside(root,artifact)
+    receipt=root/'review'/f'{path.stem}-build.json'
+    if path.suffix.lower()!='.docx' or not receipt.is_file():
+        raise ValueError('Missing build receipt: rebuild this DOCX with the current tool before delivery')
+    record=read_json(receipt)
+    if (record.get('artifact')!=path.relative_to(root).as_posix()
+            or record.get('artifact_sha256')!=digest(path)
+            or record.get('inputs')!=build_inputs(root,content)):
+        raise ValueError('Artifact or build inputs changed: rebuild and review the current DOCX before delivery')
+    return record
 
 
 def build(root, content='draft/report.json'):
@@ -280,6 +368,7 @@ def build(root, content='draft/report.json'):
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from PIL import Image
     data=read_json(inside(root,content));validate_content(root,data)
+    inputs=build_inputs(root,content)
     doc=Document();sec=doc.sections[0]
     sec.page_width=Cm(21);sec.page_height=Cm(29.7)
     sec.top_margin=sec.bottom_margin=Cm(2)
@@ -339,6 +428,9 @@ def build(root, content='draft/report.json'):
     save_json(root/'review'/f'{output.stem}-figure-map.json',[
         dict(number=f['number'],source_figure=f.get('source_figure'),image=f['image'])
         for section in ['methods','conclusions'] for item in data[section] for f in item.get('figures',[])])
+    save_json(root/'review'/f'{output.stem}-build.json',dict(
+        schema_version=1,artifact=output.relative_to(root).as_posix(),
+        artifact_sha256=digest(output),inputs=inputs))
     return output
 
 
@@ -350,6 +442,7 @@ def main():
     cmd=subs.add_parser('pages');cmd.add_argument('--workspace',required=True);cmd.add_argument('--pdf',default='source/paper.pdf');cmd.add_argument('--pages',nargs='+',type=int);cmd.add_argument('--dpi',type=int,default=110)
     cmd=subs.add_parser('inspect-crop');cmd.add_argument('--workspace',required=True);cmd.add_argument('--image',required=True)
     cmd=subs.add_parser('review-crop');cmd.add_argument('--workspace',required=True);cmd.add_argument('--image',required=True);cmd.add_argument('--note',required=True)
+    cmd=subs.add_parser('reject-crop');cmd.add_argument('--workspace',required=True);cmd.add_argument('--image',required=True);cmd.add_argument('--reason',required=True)
     cmd=subs.add_parser('build');cmd.add_argument('--workspace',required=True);cmd.add_argument('--content',default='draft/report.json')
     args=parser.parse_args()
     try:
@@ -358,6 +451,7 @@ def main():
         elif args.command=='pages':result=render_pages(workspace(args.workspace),args.pdf,args.pages,args.dpi)
         elif args.command=='inspect-crop':result=inspect_crop(workspace(args.workspace),args.image)
         elif args.command=='review-crop':result=review_crop(workspace(args.workspace),args.image,args.note)
+        elif args.command=='reject-crop':result=reject_crop(workspace(args.workspace),args.image,args.reason)
         else:result=build(workspace(args.workspace),args.content)
         print(result)
     except Exception as exc:

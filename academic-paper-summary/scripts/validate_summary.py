@@ -56,6 +56,8 @@ def figure_ids(text: str) -> set[str]:
 
 
 def caption_ids(p: Paragraph) -> set[str]:
+    if p.style and p.style not in ('Caption','题注'):
+        return set()
     if re.match(r'^\s*(?:图|Fig(?:ure)?\.?)\s*\d+(?:[-–.]\d+)*(?=\s|[:：])', p.text, re.I):
         # A caption may mention other figures later; count its leading ID only.
         match = re.match(r'^\s*((?:图|Fig(?:ure)?\.?)\s*\d+(?:[-–.]\d+)*)', p.text, re.I)
@@ -150,13 +152,6 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     for key in SECTION_NAMES:
         if not any(p.text and heading_level(p) is None for p in section_paragraphs(block, key)):
             errors.append(f'章节无正文：{key}')
-    for key in ('methods','conclusions'):
-        items=section_paragraphs(block,key)
-        prose='\n'.join(p.text for p in items if heading_level(p) is None and not caption_ids(p))
-        cited=figure_ids(prose)
-        for p in items:
-            for figure in caption_ids(p)-cited:
-                warnings.append(f'图{figure.split(":",1)[1]}仅检测到图注，所在章节正文未明确引用；须检查图文对应')
     figure_sequence=[]
     for p in block.paragraphs:
         if caption_ids(p):
@@ -170,6 +165,10 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     elif len(bg) > 3:
         warnings.append('研究背景超过通常的2–3段，请核对是否必要')
     conclusion = section_paragraphs(block, 'conclusions')
+    figure_led=[p for p in conclusion if heading_level(p) is None and not caption_ids(p)
+                and re.match(r'^\s*(?:图\s*\d+|Fig(?:ure)?\.?\s*\d+)',p.text,re.I)]
+    if len(figure_led)>=2:
+        warnings.append(f'主要结论有{len(figure_led)}段以图号开头，请结合论述需要判断是否成为读图清单；合理引用无需改写，不强制每段先写结论，也不能仅替换起句词')
     captions = set().union(*(caption_ids(p) for p in conclusion)) if conclusion else set()
     images = sum(p.images for p in conclusion)
     if len(captions) < minimum_figures:
