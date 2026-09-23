@@ -12,7 +12,7 @@ from validate_summary import (Paragraph, Block, validate_block, figure_ids,
 
 
 def fixture():
-    return Block('测试结构', [
+    block = Block('测试结构', [
         Paragraph('测试结构', 'Heading 1'),
         Paragraph('一、研究背景', 'Heading 2'), Paragraph('背景一。'), Paragraph('背景二。'),
         Paragraph('二、研究方法', 'Heading 2'),
@@ -24,8 +24,19 @@ def fixture():
         Paragraph('四、创新点', 'Heading 2'),
         Paragraph('测试条目一。'), Paragraph('测试条目二。'), Paragraph('测试条目三。'),
         Paragraph('五、引用格式', 'Heading 2'), Paragraph('测试引用，2020。')])
+    block.paragraphs[13:13]=[p for n in range(2,6) for p in
+        (Paragraph(f'{n}. 独立测试发现', 'Heading 3'),Paragraph('该发现的证据与解释。'))]
+    return block
 
 class ValidatorTests(unittest.TestCase):
+    def test_at_least_five_findings_not_six_or_figure_quota(self):
+        b=fixture()
+        self.assertEqual(validate_block(b,0)[0],[])
+        del b.paragraphs[13:15]
+        self.assertTrue(any('至少5项' in x for x in validate_block(b,0)[0]))
+        b=fixture()
+        b.paragraphs[13:13]=[Paragraph(f'{n}. 更多发现','Heading 3') for n in (6,7)]
+        self.assertEqual(validate_block(b,0)[0],[])
     def test_repeated_figure_led_prose_warns_without_treating_it_as_caption(self):
         b=fixture();b.paragraphs[10]=Paragraph('图1 上排展示形貌。','Normal')
         b.paragraphs.insert(11,Paragraph('图1 下排展示另一组。','Normal'))
@@ -67,7 +78,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any('同级' in x for x in validate_block(b,1)[0]))
 
     def test_extra_innovation_fails(self):
-        b = fixture(); b.paragraphs.insert(17,Paragraph('第四条。'))
+        b = fixture(); b.paragraphs.insert(-2,Paragraph('第四条。'))
         self.assertTrue(any('创新点须' in x for x in validate_block(b,1)[0]))
 
     def test_empty_citation_and_out_of_order_fail(self):

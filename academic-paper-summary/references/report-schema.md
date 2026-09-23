@@ -32,7 +32,7 @@ The methods section must include at least one figure. Prefer preparation, specim
 
 ### 三、主要结论
 
-Aim for about five evidence-based findings (usually 4–6). Merge complementary evidence for the same finding; do not confuse finding count with figure count, invent findings, or suppress independent key results.
+Include at least five evidence-based findings, with no fixed count of six or upper limit. Follow the paper’s research progression and actual relationships between findings. Develop each finding in as many substantive paragraphs as needed. Select only useful supporting figures; there is no per-finding or total conclusion-figure quota. Do not invent findings or split sentences merely to meet the count.
 
 Restart result subsection numbering at 1, 2, 3, never 3.1, 3.2.
 

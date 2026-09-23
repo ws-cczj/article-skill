@@ -14,6 +14,11 @@ SECTION_NAMES = {
     'citation': ('引用格式', '参考文献'),
 }
 
+
+def parenthetical_figure_reference(text: str) -> bool:
+    # Standalone citation parentheses; retain normal subpanel labels such as 图2(a).
+    return bool(re.search(r'[（(]\s*(?:见\s*)?(?:图|Fig(?:ure)?\.?)\s*\d+[^。；;\n）)]*[）)]',text,re.I))
+
 @dataclass
 class Paragraph:
     text: str
@@ -181,6 +186,8 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     result_headings = [p for p in conclusion if heading_level(p) == 3]
     if not result_headings:
         errors.append('主要结论缺少三级结果小标题')
+    if len(result_headings) < 5:
+        errors.append(f'主要结论至少5项，检测到{len(result_headings)}项；按研究逻辑组织，不按图数或拆句凑条')
     for p in result_headings:
         if re.search(r'方法具有.*性质|方法(?:的)?(?:有效性|适用性|局限性)|方法边界', p.text):
             errors.append(f'方法评价不能独立充当主要结论：{p.text}')
@@ -191,6 +198,8 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     if not re.search(r'\b(?:19|20)\d{2}\b', citation):
         errors.append('引用缺少可识别年份')
     all_text = '\n'.join(p.text for p in block.paragraphs)
+    if any(parenthetical_figure_reference(p.text) for p in block.paragraphs if not caption_ids(p)):
+        errors.append('正文不要使用括号式图号引用（图X）；按需要自然写如图X所示，或省略图号')
     if re.search(r'以下将图表证据嵌入|图中数值和判断均保留论文|<TODO>|\{\{[^}]+\}\}', all_text):
         errors.append('正文包含执行说明或未替换占位符')
     return list(dict.fromkeys(errors)), list(dict.fromkeys(warnings))
@@ -200,7 +209,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('path', type=Path)
     parser.add_argument('--expected-papers', type=int)
-    parser.add_argument('--min-figures', type=int, default=5)
+    parser.add_argument('--min-figures', type=int, default=0, help='Optional explicit user figure quota; default has no figure count floor')
     parser.add_argument('--min-figures-per-paper', help='例如3,5；来自源文清点或用户要求')
     parser.add_argument('--innovation-count', type=int, default=3)
     args = parser.parse_args()

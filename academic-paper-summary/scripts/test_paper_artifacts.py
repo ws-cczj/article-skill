@@ -11,6 +11,32 @@ from paper_artifacts import (initialize, crop, build, inside, save_json, read_js
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_parenthetical_figure_reference_rejected(self):
+        from validate_summary import parenthetical_figure_reference
+        for text in ['结果增加（图2）。','结果增加(图 2)。','结果增加（图2(a)、图3）。']:
+            self.assertTrue(parenthetical_figure_reference(text))
+        self.assertFalse(parenthetical_figure_reference('如图2(a)所示，结果增加。'))
+        self.data['conclusions'][0]['paragraphs']=['结果增加（图2）。']
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'Parenthetical'):build(self.root)
+
+    def test_identity_keywords_rejected(self):
+        source=self.parent/'keywords.pdf'
+        with fitz.open() as doc:
+            p=doc.new_page();p.insert_text((40,50),'Title and authors')
+            p.insert_text((40,80),'Affiliations and address')
+            p.insert_text((40,110),'Keywords: composite; fatigue')
+            doc.save(source)
+        root=initialize(source,self.parent/'outputs')
+        im=crop(root,1,[20,20,350,130],'header')
+        name=im.relative_to(root).as_posix()
+        review_crop(root,name,'Synthetic crop includes title, address and unwanted keyword line.')
+        data=dict(self.data,identity_images=[name],methods=[dict(heading='方法',paragraphs=['方法内容'])],
+                  conclusions=[dict(heading='结果',paragraphs=['结果内容'])],
+                  methods_figure_absence_reason='Synthetic source has no figures.')
+        save_json(root/'draft/report.json',data)
+        with self.assertRaisesRegex(ValueError,'Keywords'):build(root)
+
     def test_final_check_rejects_wrong_or_changed_artifact(self):
         from paper_memory import check
         output=build(self.root)

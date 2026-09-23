@@ -272,6 +272,7 @@ def validate_citation(data):
 
 
 def validate_content(root, data):
+    from validate_summary import parenthetical_figure_reference
     def nonempty(value): return isinstance(value,str) and bool(value.strip())
     if not isinstance(data,dict):
         raise ValueError('Report must be a JSON object')
@@ -317,6 +318,8 @@ def validate_content(root, data):
     if not all(nonempty(t) for t in texts):
         raise ValueError('All content paragraphs must be nonempty strings')
     for t in texts:
+        if parenthetical_figure_reference(t):
+            raise ValueError('Parenthetical figure reference: use natural prose such as 如图X所示 or omit the reference')
         if re.search(r'原文\s*(?:Fig(?:ure)?\.?|图)|作者(?:在|采用|利用|认为|构建)|本文(?:提出|研究)|该研究表明',t,re.I):
             raise ValueError('Rewrite indirect narration or source-caption prefixes before building')
     for name in images:
@@ -333,6 +336,18 @@ def validate_content(root, data):
                 or not meta.is_file() or record.get('provenance_sha256') != digest(meta)
                 or record.get('source_sha256') != digest(inside(root,read_json(meta)['source']))):
             raise ValueError(f'Image review missing or stale; inspect and review again: {name}')
+        if name in data['identity_images']:
+            import fitz
+            provenance=read_json(meta)
+            with fitz.open(inside(root,provenance['source'])) as pdf:
+                page=pdf[provenance['page']-1]
+                rect=fitz.Rect(provenance['rect'])
+                for block in page.get_text('dict')['blocks']:
+                    for line in block.get('lines',[]):
+                        text=''.join(s['text'] for s in line['spans']).strip()
+                        if (re.match(r'^(?:Key\s*words?|关键词)\s*[:：]',text,re.I)
+                                and (fitz.Rect(line['bbox'])*page.rotation_matrix).intersects(rect)):
+                            raise ValueError('Identity screenshot includes Keywords; recrop below affiliations and above keywords')
 
 
 def build_inputs(root, content):
