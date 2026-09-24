@@ -34,25 +34,31 @@
 - DOCX排版复核：Microsoft Word、LibreOffice或Agent可用的等效渲染工具。
 - 字体：**宋体、楷体、Times New Roman**。字体不随仓库分发，缺字体时不能保证显示效果一致。
 
-优先使用Agent已有的文档环境。需要新建时，在仓库根目录执行：
+默认使用**用户专属.venv**隔离Python依赖。本地或Codex提供的Python 3.10+用于创建环境；后续统一调用虚拟环境中的解释器。
 
-Windows PowerShell：
+Windows PowerShell（仓库根目录）：
 
 ```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r .\academic-paper-summary\requirements.txt
-.\.venv\Scripts\python.exe .\academic-paper-summary\scripts\check_environment.py --smoke
+powershell -NoProfile -File ./academic-paper-summary/scripts/bootstrap.ps1
 ```
 
-macOS / Linux：
+macOS/Linux：
 
 ```sh
-python3 -m venv .venv
-./.venv/bin/python -m pip install -r ./academic-paper-summary/requirements.txt
-./.venv/bin/python ./academic-paper-summary/scripts/check_environment.py --smoke
+sh ./academic-paper-summary/scripts/bootstrap.sh
 ```
 
-已安装用户可将命令中的Skill路径替换为实际安装路径，并让Agent使用配置好的Python解释器。检查退出码：`0`表示依赖可用且检测到字体/渲染器，`1`表示必需环境失败，`2`表示字体或渲染器尚未确认。检测通过不等于实际Word排版通过。详细配置和恢复方法见 [环境说明](academic-paper-summary/references/environment-setup.md)。
+入口脚本本身不依赖Python。Agent按“可用的专属`.venv` → Codex提供的Python → 用户本机Python”选择。在Codex中先通过`load_workspace_dependencies`发现运行时路径，传入Windows的`-RuntimePython`或macOS/Linux的`--runtime-python`，再验证是否可执行、版本和venv/ensurepip是否可用；工具不可用时才直接检查本机环境。用户无需手动寻找Codex缓存路径。
+
+找不到路径不能直接认定未安装Python：须区分路径不可见、权限/沙箱限制、版本不兼容、缺模块和安装依赖失败。默认`.venv`目录不可写时，可指定当前工作区可写位置；不自动改全局权限。只有没有任何兼容、可访问的基础Python时，才给出[Python官方安装入口](https://www.python.org/downloads/)或系统包管理器方案。安装后重跑同一入口继续。
+
+仅检查解释器、不创建环境时使用`-CheckOnly`或`--check-only`。这不代表依赖、字体和Word渲染已通过检查。Windows若阻止脚本执行，按本机策略处理，不自动更改全局执行策略。
+
+已安装用户使用实际skill目录下的同一脚本。环境默认位于`$CODEX_HOME/skill-state/article-skill/.venv`，未设置时为`~/.codex/skill-state/article-skill/.venv`；独立于skill安装目录，更新skill和多篇生成可复用。需要仓库内环境时Windows入口加`-VenvPath "<仓库路径>/.venv"`，其他入口加`--venv "<仓库路径>/.venv"`。脚本返回后续应使用的绝对Python路径，无需手动激活。
+
+首次配置需要安装requirements.txt中的依赖；依赖未改变且导入正常时直接复用、不重复安装。`--repair`可重查依赖，失败不向全局Python安装包。不要将本机`.venv`提交或打进ZIP，其他用户在自己电脑创建；依赖隔离不能替代Office与字体安装，也不保证不同机器依赖版本完全一致。
+
+使用返回的Python运行`scripts/check_environment.py --smoke`可复查环境：`0`表示依赖可用且检测到字体/渲染器，`1`表示必需环境失败，`2`表示字体或渲染器尚未确认。检查通过不等于Word实际排版通过。详细配置见[环境说明](academic-paper-summary/references/environment-setup.md)。
 
 ## 使用
 
@@ -119,6 +125,8 @@ academic-paper-summary/
   references/                 写作、来源、图片、格式和环境规范
   scripts/
     first_use.py              首次使用提示
+    bootstrap.ps1 / bootstrap.sh  无需Python的发现与启动入口
+    setup_environment.py      创建或复用用户专属.venv
     check_environment.py      环境检查
     paper_artifacts.py        提取、预览、裁图、复核记录与Word构建
     paper_memory.py           每篇问题记忆、证据索引与交付前检查

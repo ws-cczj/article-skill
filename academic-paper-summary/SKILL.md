@@ -7,6 +7,14 @@ description: 将用户提供的完整论文 PDF 按内置老师要求总结为�
 
 目标是写出可交给老师审阅的中文文献总结：题目专业，方法归类准确简洁，主要结论由具体研究结果组成，原图与解释相互对应。老师附件的要求和成功总结的写法已固化在本 skill 的参考文件中。安装后，用户只需提供完整原论文并说“总结这篇文献”，即可按内置规范生成最终文档。
 
+## Python运行环境
+
+按[environment-setup.md](references/environment-setup.md)执行环境预检：优先复用已可执行的专属`.venv`；需要基础解释器时，在Codex先调用可用的`load_workspace_dependencies`工具发现运行时，将返回路径传给bootstrap.ps1的`-RuntimePython`或bootstrap.sh的`--runtime-python`，再回退检查本机Python。脚本不能自行调用Codex工具，发现由Agent完成；不可硬编码缓存路径或跳过发现就让用户安装Python。用户明确指定的解释器优先。
+
+路径缺失/不可见、权限或沙箱限制、版本/模块不兼容、pip安装失败必须分别诊断；访问失败不等于没安装Python。环境目录须在当前执行上下文中可写，必要时通过`-VenvPath`/`--venv`指定工作区专属路径并在任务中记住。仅全部候选均无可用解释器时提供安装方案。
+
+由setup_environment.py创建或复用专属`.venv`后，所有检查和生成脚本使用返回的绝对Python路径，不依赖activate，不向Codex基础Python或全局环境安装包，不为每篇论文重建环境。.venv不随GitHub或ZIP分发。依赖可用后另查Office/字体，环境检测不替代实际Word渲染。
+
 ## 首次使用欢迎语
 
 实际调用本skill总结论文时，在开始工作前运行 `python <skill目录>/scripts/first_use.py`。脚本仅在当前本机用户首次使用时输出以下文字，Agent须将其原样作为一条独立的对话提示显示给用户：

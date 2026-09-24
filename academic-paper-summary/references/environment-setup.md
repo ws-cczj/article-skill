@@ -4,7 +4,7 @@
 
 ## 每次开始任务时
 
-先使用可用Python运行 `<skill目录>/scripts/check_environment.py --json`，环境首次配置后或依赖变更后可加 `--smoke`。使用绝对路径并加引号，Windows可用`py -3`，macOS/Linux通常用`python3`；后续检查、欢迎语和生成操作尽量使用同一个解释器。
+先按下节运行不依赖Python的bootstrap入口，再由setup_environment.py取得专属.venv的Python路径，再使用该Python运行 `<skill目录>/scripts/check_environment.py --json`，环境首次配置后或依赖变更后可加 `--smoke`。后续检查、欢迎语和生成操作均使用该解释器的绝对路径并加引号；PowerShell以`& "<Python绝对路径>" "<脚本路径>"`调用，不能又切回裸python或py -3。
 
 - 退出码0：依赖可导入，渲染器和字体名称已检测到；不代表已完成实际渲染。
 - 退出码1：Python版本或依赖导入/读写测试失败，检查输出中的具体项目。
@@ -12,27 +12,60 @@
 
 预检查不安装软件、不修改字体、不打开用户文档、不消耗欢迎语状态。`--smoke`只在自动清理的临时目录创建无论文内容的测试文件。它验证PDF文本提取、页面栅格化和DOCX插图读写，不验证DOCX到PDF导出。
 
-## Python依赖
+## Python依赖：专属.venv优先
 
-推荐Python 3.10及以上。优先使用Agent已有的可用文档运行环境；不要在已有环境能工作时重复创建环境。需要新建时推荐隔离虚拟环境，以下命令在仓库根目录执行：
+默认使用本机用户专属虚拟环境。解释器选择顺序固定为：
 
-Windows PowerShell：
+1. 当前任务指定的专属`.venv`存在且能执行时复用，不因Codex更新就重建。
+2. 需要基础Python时，在Codex中先调用可用的`load_workspace_dependencies`工具（当前工具名可能为`mcp__codex_app__load_workspace_dependencies`），取得返回的Python绝对路径，并实际验证。工具不可用或没有返回Python时记录这一情况，不假定所有Codex宿主都有相同运行时。
+3. 将发现的路径传入bootstrap的`-RuntimePython`或`--runtime-python`；入口按“已有.venv → 传入的Codex运行时 → 本机py/python3/python”逐个检查。Shell脚本不能自行调用Codex工具，Agent负责发现并传参。不得跳过Codex发现直接让用户安装Python。
+4. 仅在这些路径都没有兼容且可访问的解释器时给安装指引。用户明确指定某解释器时用`-PythonPath`或`--python`，失败不静默切换。
+
+Codex Python只作创建环境的基础运行时，不向它或系统Python安装skill依赖；创建后统一使用`.venv`返回的解释器路径。基础Python不支持venv/ensurepip时保留具体诊断，再尝试本机兼容Python，不能把“有Python”当成“能创建虚拟环境”。
+
+Windows PowerShell首次配置：
 
 ```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r .\academic-paper-summary\requirements.txt
-.\.venv\Scripts\python.exe .\academic-paper-summary\scripts\check_environment.py --smoke
+powershell -NoProfile -File "<skill目录>/scripts/bootstrap.ps1"
 ```
 
 macOS/Linux：
 
 ```sh
-python3 -m venv .venv
-./.venv/bin/python -m pip install -r ./academic-paper-summary/requirements.txt
-./.venv/bin/python ./academic-paper-summary/scripts/check_environment.py --smoke
+sh "<skill目录>/scripts/bootstrap.sh"
 ```
 
-已经安装skill的用户将`academic-paper-summary`替换为实际skill绝对路径即可；虚拟环境可建在自己的工作目录，不要求能写入skill安装目录。依赖随包提供在`requirements.txt`：python-docx用于DOCX读写与结构检查，PyMuPDF用于PDF读取/提图/页面渲染，Pillow用于图片检查。版本范围不是锁定环境，安装后运行smoke确认组合可用。
+入口按上述顺序检查Python版本和venv/ensurepip。`-CheckOnly`（PowerShell）或`--check-only`（sh）只做解释器检查，不安装、不建目录。缺Python时退出2并提供下一步，不开始生成；初始化失败退出非零，成功退出0，但Office/字体仍需独立检查。
+
+在Codex中发现路径后，例如：
+
+```powershell
+powershell -NoProfile -File "<skill目录>/scripts/bootstrap.ps1" -RuntimePython "<工具返回的Python路径>"
+```
+
+macOS/Linux使用`sh "<skill目录>/scripts/bootstrap.sh" --runtime-python "<工具返回的Python路径>"`。不把工具返回的路径硬编码进skill或复制到其他设备。
+
+### 区分环境失败原因
+
+- 路径不存在或当前执行环境不可见：重新发现运行时，确认本机、远程或容器的路径归属；不能据此认定电脑没装Python。
+- Permission denied、Access denied或沙箱限制：报告具体路径和错误，使用当前环境允许访问的运行时/目录；遵守宿主权限流程，不以安装Python代替访问问题。
+- 解释器可启动，但版本过低或缺venv/ensurepip：报告版本或缺少模块，继续寻找兼容基础解释器。
+- Python可用，但默认环境目录不可写：在当前可写工作区选择专属目录，传`-VenvPath`或`--venv`，后续持续复用并记录路径。不要求写入用户电脑上不可见的CODEX_HOME路径。
+- pip下载、代理或依赖安装失败：报告安装阶段错误；不要删除环境或声称缺Python。恢复访问后重跑，已成功环境不重复安装。
+
+启动脚本保留失败候选的诊断；“未找到可用解释器”只表示当前候选在当前执行环境不可用，不等于确认未安装。
+
+完全没有兼容Python时，给用户明确安装指引：[Python官方下载](https://www.python.org/downloads/)（受支持的稳定版本且满足3.10+），或使用操作系统包管理器；Linux可能需要额外的venv/ensurepip组件。安装完成后重开终端，再运行同一入口。不要只抛出python命令不存在，也不自动下载安装不明运行时、更改PATH或全局执行策略。若用户已授权安装，按目标系统提供的正规安装方式完成再复查。
+
+PowerShell脚本若受执行策略限制，依用户机器策略处理；不要默默改全局策略。自定义环境位置用PowerShell的`-VenvPath`或sh的`--venv`。首次初始化保持单写入者，同一环境不要并发安装依赖。
+
+脚本默认在`$CODEX_HOME/skill-state/article-skill/.venv`创建环境，未设置CODEX_HOME时使用`~/.codex/skill-state/article-skill/.venv`。它位于skill安装目录外，更新skill不需重装依赖，也适用于只读安装目录。所有论文共用这一个专属环境，不在每篇输出目录重建。仅首次配置或requirements改变、导入失败、显式--repair时安装依赖；成功的重复调用复用环境、不联网安装。首次安装需能够访问pip配置的软件源；断网时不要假装成功或擅自改全局pip源。
+
+最后输出JSON中的`python`是后续所有脚本使用的绝对解释器路径，无需activate。启动每次任务可重跑setup，再用返回的Python执行check_environment.py --json；检查字体和渲染器的责任仍保留。setup退出0只说明Python依赖可用，不保证Office/字体可用。
+
+开发者希望使用仓库内`.venv`时加`--venv "<仓库目录>/.venv"`；已选自定义路径的任务必须持续使用同一路径。已有环境损坏时用`--repair`重查安装；环境本身缺Python或无法运行时选择新的空目录重建，不自动删除旧目录、不静默切回全局环境。若标准Python缺venv/ensurepip，换一个支持venv的Python，或依系统要求补齐该组件。
+
+**不提交、不打包、不跨设备复制.venv。** 它包含本机路径和平台相关二进制；仓库只分发setup_environment.py与requirements.txt。依赖版本范围不是精确锁文件，不保证所有机器安装完全相同的版本；安装后执行冒烟测试。用户明确指定已有环境时可沿用，但先检查依赖并说明它不受专属环境隔离。
 
 ## DOCX渲染与字体
 
