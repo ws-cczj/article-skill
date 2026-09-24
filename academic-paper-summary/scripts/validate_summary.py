@@ -19,6 +19,12 @@ def parenthetical_figure_reference(text: str) -> bool:
     # Standalone citation parentheses; retain normal subpanel labels such as 图2(a).
     return bool(re.search(r'[（(]\s*(?:见\s*)?(?:图|Fig(?:ure)?\.?)\s*\d+[^。；;\n）)]*[）)]',text,re.I))
 
+
+def bare_panel_descriptions(text: str) -> bool:
+    """Catch label-only captions, not scientific completeness or all label styles."""
+    parts=re.split(r'[（(][a-z]\d*[）)]',text,flags=re.I)
+    return any(re.fullmatch(r'[\sA-Za-z0-9_+%°.,，。;；:：/–—−-]*',part) for part in parts[1:])
+
 @dataclass
 class Paragraph:
     text: str
@@ -198,6 +204,8 @@ def validate_block(block: Block, minimum_figures: int, innovation_count: int = 3
     if not re.search(r'\b(?:19|20)\d{2}\b', citation):
         errors.append('引用缺少可识别年份')
     all_text = '\n'.join(p.text for p in block.paragraphs)
+    if any(bare_panel_descriptions(p.text) for p in block.paragraphs if caption_ids(p)):
+        errors.append('子图说明为空或仅列英文代号；须说明各子图的对象、条件和展示内容')
     if any(parenthetical_figure_reference(p.text) for p in block.paragraphs if not caption_ids(p)):
         errors.append('正文不要使用括号式图号引用（图X）；按需要自然写如图X所示，或省略图号')
     if re.search(r'以下将图表证据嵌入|图中数值和判断均保留论文|<TODO>|\{\{[^}]+\}\}', all_text):

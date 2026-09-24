@@ -82,7 +82,7 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
       "heading": "具体结果型标题，不写编号",
       "paragraphs": ["围绕阶段性发现展开比较和有依据的解释，按论述需要引用图片"],
       "figures": [
-        {"number": 2, "source_figure": "原文对应图号，仅内部使用", "image": "assets/figure2-001.png", "caption": "图像内容。（a）单独说明；（b）单独说明；（c）单独说明。"}
+        {"number": 2, "source_figure": "原文对应图号，仅内部使用", "image": "assets/figure2-001.png", "panel_labels": ["a", "b", "c"], "caption": "共同测试条件。（a）实际样品及所展示内容；（b）实际样品及所展示内容；（c）实际样品及所展示内容。"}
       ]
     }
   ],

@@ -126,6 +126,7 @@ def check(root, artifact=None, content='draft/report.json'):
                 status='blocked' if blockers else 'memory_clear',
                 note='No recorded blockers is not proof of scientific or visual correctness')
     if artifact:
+        write(root/'memory/last-delivery.json',dict(result,status='artifact_check_pending',artifact=artifact))
         write(root/'memory/last-check.json',dict(result,status='artifact_check_pending'))
         from paper_artifacts import validate_content, verify_build
         validate_content(root,read(file_at(root,content)))
@@ -134,6 +135,7 @@ def check(root, artifact=None, content='draft/report.json'):
                       build_inputs=receipt['inputs'],
                       content_sha256=sha(file_at(root,content)),
                       records_sha256={p.name:sha(p) for p in sorted((root/'memory/records').glob('*.json'))})
+        write(root/'memory/last-delivery.json',result)
     write(root/'memory/last-check.json',result)
     return result
 

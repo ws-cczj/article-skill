@@ -11,6 +11,33 @@ from paper_artifacts import (initialize, crop, build, inside, save_json, read_js
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_caption_panel_coverage_and_real_descriptions(self):
+        f=self.data['conclusions'][0]['figures'][0]
+        f.update(panel_labels=['a','b'],caption='形貌对比。（a）HBA；（b）HCB。')
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'Panel descriptions'):build(self.root)
+        f['caption']='（a）未处理组孔壁形貌，可见局部裂纹。'
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'Missing caption'):build(self.root)
+        f['caption']='（b）处理组孔壁形貌，裂纹范围较小；（a）未处理组孔壁形貌，可见局部裂纹。'
+        save_json(self.root/'draft/report.json',self.data)
+        with self.assertRaisesRegex(ValueError,'order'):build(self.root)
+        f['caption']='（a）未处理组孔壁形貌，可见局部裂纹；（b）处理组孔壁形貌，裂纹范围较小。'
+        save_json(self.root/'draft/report.json',self.data)
+        self.assertTrue(build(self.root).exists())
+
+    def test_ordinary_check_preserves_delivery_receipt_and_failed_delivery_invalidates_it(self):
+        from paper_memory import check
+        output=build(self.root);name=output.relative_to(self.root).as_posix()
+        check(self.root,name)
+        stamp=self.root/'memory/last-delivery.json';before=stamp.read_bytes()
+        check(self.root)
+        self.assertEqual(stamp.read_bytes(),before)
+        self.assertEqual(read_json(stamp)['artifact'],name)
+        output.write_bytes(output.read_bytes()+b'changed')
+        with self.assertRaises(ValueError):check(self.root,name)
+        self.assertEqual(read_json(stamp)['status'],'artifact_check_pending')
+
     def test_parenthetical_figure_reference_rejected(self):
         from validate_summary import parenthetical_figure_reference
         for text in ['结果增加（图2）。','结果增加(图 2)。','结果增加（图2(a)、图3）。']:

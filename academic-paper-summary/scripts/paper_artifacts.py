@@ -272,7 +272,7 @@ def validate_citation(data):
 
 
 def validate_content(root, data):
-    from validate_summary import parenthetical_figure_reference
+    from validate_summary import parenthetical_figure_reference, bare_panel_descriptions
     def nonempty(value): return isinstance(value,str) and bool(value.strip())
     if not isinstance(data,dict):
         raise ValueError('Report must be a JSON object')
@@ -311,6 +311,21 @@ def validate_content(root, data):
                 if figure['number'] != next_figure:
                     raise ValueError(f'Figures must follow report appearance order, expected {next_figure}; store original PDF numbering in source_figure only')
                 next_figure+=1
+                if bare_panel_descriptions(figure['caption']):
+                    raise ValueError('Panel descriptions cannot be empty or only sample codes; explain the actual panel content')
+                labels=figure.get('panel_labels')
+                if labels is not None:
+                    if (not isinstance(labels,list) or not all(isinstance(v,str) and v.strip() for v in labels)
+                            or len(set(labels))!=len(labels)):
+                        raise ValueError('panel_labels must be unique source-confirmed labels, or [] for a single panel')
+                    positions=[]
+                    for label in labels:
+                        marker=re.search(r'[（(]\s*'+re.escape(label)+r'\s*[）)]',figure['caption'])
+                        if not marker:
+                            raise ValueError(f'Missing caption explanation for source panel {label}')
+                        positions.append(marker.start())
+                    if positions!=sorted(positions):
+                        raise ValueError('Caption panels must follow source-confirmed panel_labels order')
                 texts.append(figure['caption']);images.append(figure['image'])
     if not any(item.get('figures') for item in data['methods']):
         if any(item.get('figures') for item in data['conclusions']) or not nonempty(data.get('methods_figure_absence_reason')):
