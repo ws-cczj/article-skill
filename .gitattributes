@@ -1,0 +1,2 @@
+# Keep the POSIX bootstrap usable in checkouts and archives on every platform.
+*.sh text eol=lf
