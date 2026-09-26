@@ -64,6 +64,10 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 
 附上目标论文PDF并发送：
 
+> 使用article-skill技能，帮我总结文献并生成一个word文件。
+
+技能描述已包含`article-skill`常用名称。需要在客户端明确选择技能时，使用正式调用名：
+
 > 使用 $academic-paper-summary，总结这篇论文，生成Word文档。
 
 多篇论文：
@@ -71,6 +75,14 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 > 使用 $academic-paper-summary，分别总结这些论文，每篇单独生成Word文档。
 
 默认逐篇创建独立目录和成稿。只有明确要求合集时，才额外汇编。用户不需要填写JSON、提供裁图坐标或编写Python脚本。
+
+### 如何保持写作质量
+
+已内置[用户认可的写作示范与注解](academic-paper-summary/references/approved-writing-example.md)，包含研究主线、完整结论段落、三项贡献定位及正文/图注分工。Agent在写第一版正文前读取，用当前论文重新建立证据和提纲；不套用示例的材料、数值或五项结论。生成后分别复读正文逻辑、创新依据和子图说明，再检查实际Word。
+
+每篇的`memory/synthesis.md`保存研究主线、来源定位和贡献依据。用户另附指导文件时，原件/提取文本放`source/reference/`，本次有效要求与冲突处理放`memory/requirements.md`；通用规范保留在skill中，不要求每次重新提供附件。原始论文和用户附件不随仓库分发。
+
+更新时须同步完整技能目录，包括新增references，不能只替换SKILL.md。不同模型的阅读与写作能力仍有差异；本次认可稿验证了示范写法，不代表所有模型或客户端已通过相同测试。结构检查通过也不等于科学事实与论述质量达标。
 
 首次实际使用时，Agent提示：
 
@@ -150,6 +162,22 @@ Agent复用预置脚本，不为每篇重写整套生成代码。相同PDF和分
 
 ## 检查与维护
 
+### Windows一键提交并推送
+
+双击仓库根目录的`push.bat`。脚本从自身位置定位项目，显示改动，执行`git add --all`，有改动时以当前时间生成提交说明，然后将当前分支推送到`origin`同名分支；没有新改动时仍可推送已有本地提交。它会提交全部未被忽略的改动（包括删除和已暂存内容），运行前请确认这些改动均准备提交。
+
+需要已安装Git并具备远端写入权限。窗口完成后停留显示结果；分支游离、合并/变基未完成、提交失败或推送被拒绝时停止，不自动拉取合并、不强推、不回退本地提交。没有推送成功时修复提示的问题后重试。
+
+默认遵循Git现有网络配置；如需代理，可设置用户环境变量`ARTICLE_SKILL_GIT_PROXY`后重新打开窗口，或单次运行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/push.ps1 -Message "更新论文总结规范" -Proxy "http://127.0.0.1:7890"
+```
+
+代理地址仅为示例，按本机实际填写；脚本不固定代理端口，也不修改全局Git配置。BAT中的执行策略参数仅作用于本次PowerShell进程。
+
+### 验证
+
 在已配置依赖的仓库根目录执行（`python`须指向该环境）：
 
 ```sh
@@ -164,7 +192,7 @@ python academic-paper-summary/scripts/validate_summary.py path/to/summary.docx -
 
 ## 发布范围与许可
 
-源码发布包含 `academic-paper-summary/`、本README、`.gitignore`和[LICENSE](LICENSE)，采用Apache-2.0许可证。原论文、老师附件、他人总结、提取文本、截图、输出文档和字体不属于应随Skill发布的素材。
+源码仓库包含 `academic-paper-summary/`、维护脚本`push.bat`与`scripts/`、本README、`.gitignore`和[LICENSE](LICENSE)，采用Apache-2.0许可证。安装Skill仍只需`academic-paper-summary/`目录。原论文、老师附件、他人总结、提取文本、截图、输出文档和字体不属于应随Skill发布的素材。
 
 `.gitignore`忽略输出、临时目录、虚拟环境与本地打包文件；**已经被Git跟踪的文件不会因新增忽略规则而自动退出版本控制**。上传前检查 `git status` 和 `git ls-files`，确认没有夹带本地论文或生成材料。更新源码后不要继续分发旧的本地ZIP。
 

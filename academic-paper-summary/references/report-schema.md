@@ -45,11 +45,13 @@ Order findings by their actual evidentiary relationships: observed changes, comp
 
 Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.
 
-This section is where key figure analysis belongs. Do not create a detached figure-analysis chapter by default.
+This section explains the paper's substantive findings and their relationships. Figure discussion supports those findings; neither caption paraphrases nor image-by-image narration replace the research account. Do not create a detached figure-analysis chapter by default.
 
 ### 四、创新点
 
 List three concrete contributions. Expand each into a compact paragraph, usually 2–3 sentences stating the contribution, a supported distinction, and its specific significance where evidenced. Avoid slogans, speculative novelty, padding, and merely repeating result numbers. Use numbered points or short paragraphs, not bullet dots; make the boundaries between points obvious.
+
+Before drafting, identify each contribution's baseline or unresolved problem as described in the source paper, the actual increment, and the evidence and specific value of that increment. Rewording three findings, listing tools, or presenting untested future suggestions is insufficient. Do not force every paper into method/mechanism/model categories. If three distinct contributions cannot be supported after rereading, disclose the shortfall instead of inventing novelty to satisfy the format.
 
 ### 五、引用格式
 
