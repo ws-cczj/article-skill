@@ -444,8 +444,7 @@ def build(root, content='draft/report.json'):
         for number,item in enumerate(data[key],1):
             p=paragraph(f'{number}. {item["heading"]}','Heading 3')
             if item.get('page_break_before'):
-                # An explicit break is used instead of paragraph pagination flags.
-                p.insert_paragraph_before().add_run().add_break(7)
+                p.paragraph_format.page_break_before=True
             for text in item['paragraphs']:paragraph(text)
             figures(item.get('figures',[]))
     paragraph('四、创新点','Heading 2')

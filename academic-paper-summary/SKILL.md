@@ -39,7 +39,7 @@ description: article-skill（论文精读总结）：将完整论文PDF按内置
 
 ## 固定脚本与逐篇文件目录
 
-读 [artifact-workflow.md](references/artifact-workflow.md)，优先复用 `scripts/paper_artifacts.py` 的init、pages、crop、inspect-crop、review-crop、reject-crop、build命令。每篇只生成其内容数据`draft/report.json`，不要反复编写新的Python排版/截图程序。Agent自行根据原文填写数据与确认截图区域，用户仍只需提供论文。
+读 [artifact-workflow.md](references/artifact-workflow.md)，复用 `scripts/paper_artifacts.py` 的init、pages、crop、inspect-crop、review-crop、reject-crop命令；Word生成使用 `scripts/content_review.py` 的prepare、record、build流程，在排版前核对内容自审版本，再调用原有生成器。每篇只生成其内容数据`draft/report.json`，不要反复编写新的Python排版/截图程序。Agent自行根据原文填写数据与确认截图区域，用户仍只需提供论文。
 
 每篇论文先init新建专属目录，原文副本放source，截图放assets，内容放draft，检查材料放review，问题、证据与索引记忆放memory，成稿放final。不同论文不得共享混杂图片目录；重复构建保留版本，不覆盖旧稿。新一轮总结同一论文也新建目录；同一任务内修订复用当前论文目录。
 
@@ -95,7 +95,9 @@ description: article-skill（论文精读总结）：将完整论文PDF按内置
 
 拟定学术题目、方法类别和结果型小标题。只看目录也应能知道研究了什么、如何研究、发现什么。删掉方法评价，将支持同一发现的图放在一起。检查结论间的证据关系，按发现、互补证据、机制与性能影响等实际逻辑推进；没有因果的发现保持并列，不靠连接词伪造递进。原文不存在的设计、模拟、因果或性能提升不得添加。除非用户要求先看提纲，否则内部完成检查后继续写作，不增加审批步骤。
 
-### 5. 完成图文总结
+### 5. 完成文字稿并自审，通过后生成Word
+
+先填写完整draft/report.json，按[content-self-review.md](references/content-self-review.md)导出阅读副本，分别审查研究逻辑、事实与数值、创新贡献、图注含义；回到原论文验证，不能让memory与正文互相作证。修正后记录对应版本，通过content_review.py build进入Word排版；命令见artifact-workflow.md。提纲检查不能替代完整文字稿自审，不能先排Word再补写通过记录。
 
 每篇独立包含：中文学术标题与原论文题名信息区截图（替代手工排写原题目、作者、期刊）；一、研究背景；二、研究方法；三、主要结论；四、创新点；五、引用格式。方法每类尽量用简短段落概述。方法和主要结论的小项分别从1、2、3开始，不用2.1或3.1。背景通常2–3段，创新点3点，每点通常2–3句组成一个短段，说明具体贡献、有依据的区别及意义；避免一句空泛口号，也不重复整段结论，不为扩写或凑数量编造贡献。
 

@@ -80,6 +80,8 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 
 已内置[用户认可的写作示范与注解](academic-paper-summary/references/approved-writing-example.md)，包含研究主线、完整结论段落、三项贡献定位及正文/图注分工。Agent在写第一版正文前读取，用当前论文重新建立证据和提纲；不套用示例的材料、数值或五项结论。生成后分别复读正文逻辑、创新依据和子图说明，再检查实际Word。
 
+Word排版前先完成[全文自审](academic-paper-summary/references/content-self-review.md)：由content_review.py导出可连续阅读的文字稿，Agent对照原文核查并修正，再记录本次审查。正常build入口会拒绝缺少或过期的内容审查记录；记录绑定源PDF、内容数据及审查笔记，不代表程序能自动验证科学正确性。裁片完整性和最终Word版面仍单独检查。
+
 示范文件还包含老师附件的机制论述改写，以及实际生成稿中比较范围、图证归属、子图解释的正反对照；每例说明来源、为什么修改及如何迁移，避免只模仿句式。图注复核覆盖样品、条件、阶段及观测/模拟的区别，标签齐全不等于解释合格。
 
 每篇的`memory/synthesis.md`保存研究主线、来源定位和贡献依据；多组多条件研究同时记录实际测试覆盖，防止将两组比较扩大为全组排序。用户另附指导文件时，原件/提取文本放`source/reference/`，本次有效要求与冲突处理放`memory/requirements.md`；通用规范保留在skill中，不要求每次重新提供附件。原始论文和用户附件不随仓库分发。

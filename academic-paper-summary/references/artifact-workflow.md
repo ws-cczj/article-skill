@@ -104,12 +104,19 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
 
 ## 构建与复核
 
+正常生成使用content_review.py作为排版入口：它在调用现有build前检查内容自审是否对应当前输入。paper_artifacts.py build保留为底层兼容接口，不代表完成自审，Agent不以直接调用它跳过本流程。原有裁片复核、拒用和构建记录机制继续生效。
+
+按[content-self-review.md](content-self-review.md)先审完整文字稿；prepare只导出阅读副本，不自动通过。实际审查笔记保存为review/content-review.md；修正回写report.json后重新prepare、复读修改，再record。记录只绑定版本，不自动判断科学事实。
+
 build另将本版本的总结图号、source_figure和图片路径保存至review/summary-XXX-figure-map.json供复核；该映射不写入成稿，也不替代Agent核对正文图号。
 
 同时生成review/summary-XXX-build.json，将该DOCX绑定到源PDF、report.json、图片和裁图坐标。交付前memory check --artifact核对这些哈希，防止检查新正文却交付旧Word。旧版没有构建记录的文档须用当前脚本重建并复核；禁止手填构建记录。正常修订修改JSON后重新build。直接在Word修改会使记录失效，应把修改回写到输入或生成逻辑后重建；特殊补充脚本或合集暂不支持这套自动绑定，须明确记录该限制并独立核验实际输出，不能宣称自动交付检查通过。
 
 ```text
-python "<工具>" build --workspace "<论文目录>"
+python "<skill目录>/scripts/content_review.py" prepare --workspace "<论文目录>"
+# Agent实际阅读、对照原文、修正，并完成review/content-review.md后：
+python "<skill目录>/scripts/content_review.py" record --workspace "<论文目录>"
+python "<skill目录>/scripts/content_review.py" build --workspace "<论文目录>"
 python "<skill目录>/scripts/validate_summary.py" "<论文目录>/final/summary-001.docx" --expected-papers 1
 ```
 
