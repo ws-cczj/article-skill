@@ -85,7 +85,7 @@ description: article-skill（论文精读总结）：将完整论文PDF按内置
 
 按[reading-synthesis.md](references/reading-synthesis.md)将研究问题、方法、分阶段发现、解释与贡献分类，写入memory/synthesis.md，并通过记忆工具登记定位。完成前不开始写最终总结或按图堆段落；初始化、提取、页面查看等阅读准备可正常进行。
 
-写第一版正文前，阅读[approved-writing-example.md](references/approved-writing-example.md)中的用户认可示范及注解，用它校准论述深度、贡献定位和正文/图注分工。只迁移写法，不迁移该论文的五项提纲、材料、数值或创新答案；本任务已读则无需逐轮重读。
+写第一版正文前，阅读[approved-writing-example.md](references/approved-writing-example.md)中的用户认可示范、老师附件改写及实际错误修订，用它校准论述深度、贡献定位、比较范围和正文/图注分工。各例标明来源及适用边界；只迁移写法，不迁移示例提纲、材料、数值或创新答案。本任务已读则无需逐轮重读。
 
 先独立通读整理出的全部信息，对照论文主旨，检查有没有遗漏核心问题、过度突出次要发现、倒置因果或条件。理解不连贯时回读原文再调整。主旨一致是必要条件，仍须核对事实与证据。
 
