@@ -23,7 +23,7 @@ outputs/日期时间_论文名_短标记/
   draft/report.json      Agent填写的事实、正文、图注与图片路径
   review/                页面预览、验证日志、版面检查
   memory/                源文件身份、问题/证据记录、交接索引与最终检查
-  final/summary-001.docx  最终文档；再次构建自动递增文件名
+  final/中文总结标题.docx  最终文档；同标题再次构建追加-002等后缀
 ```
 
 一篇PDF对应一个目录；多篇分别初始化。默认每篇一个成稿，除非用户明确要求合集。合集是额外输出，不把各论文图片、中间文件混入同一目录。交付只链接final中的成稿，图片和中间文件留在各自子目录，不一股脑列给用户。
@@ -61,7 +61,7 @@ python "<工具>" reject-crop --workspace "<论文目录>" --image "assets/figur
 
 同样的图片字节即使改名、重新inspect-crop或review-crop也会被拒绝。正确的新裁片仍须实际查看后复核。ink_at_crop_edge提示裁片边界有深色内容，可发现嵌入位图的文字截断，也可能只是图片背景或完整边框；须对照原页判断，不自动裁白边或宣称通过。
 
-按[quality-gates.md](quality-gates.md)保存简短证据表和实际问题的关闭记录；题名截图必须带完整单位地址。新建目录不会自动继承其他任务的拒用记录，不能跨任务盲用旧素材。
+按[quality-gates.md](quality-gates.md)定位当前检查阶段；逐项证据只保存到content-claims.json，实际问题引用既有核查记录，不另建证据表；题名截图必须带完整单位地址。新建目录不会自动继承其他任务的拒用记录，不能跨任务盲用旧素材。
 
 init生成空的`draft/report.json`。将精读确认后的中文内容填入以下结构；所有示意文字都应替换，不能把这个结构当成真实总结。
 
@@ -104,26 +104,29 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
 
 ## 构建与复核
 
+成稿名称取report.json的title_zh，首次为“中文总结标题.docx”，同标题重建追加-002、-003等后缀，不覆盖旧文件或已有构建记录。非法文件名字符替换为下划线，系统保留名前加下划线，极长名称作必要截短；正文标题不变。PDF使用对应Word的主文件名。实际验证、记忆检查与交付必须使用build返回的标题文件路径，不能硬编码summary编号。
+
 正常生成使用content_review.py作为排版入口：它在调用现有build前检查内容自审是否对应当前输入。paper_artifacts.py build保留为底层兼容接口，不代表完成自审，Agent不以直接调用它跳过本流程。原有裁片复核、拒用和构建记录机制继续生效。
 
-按[content-self-review.md](content-self-review.md)先审完整文字稿；prepare只导出阅读副本，不自动通过。实际审查笔记保存为review/content-review.md；修正回写report.json后重新prepare、复读修改，再record。记录只绑定版本，不自动判断科学事实。
+按[content-self-review.md](content-self-review.md)先审完整文字稿；prepare导出阅读副本及逐项审核候选，不自动通过。整体审查笔记保存为review/content-review.md，原句与证据填写content-claims.json；修正回写report.json后重新prepare、合并受影响行并复读，再verify/record。程序核对原句、必需字段、状态及已声明的计算并绑定版本，不自动判断源证据与科学解释。
 
-build另将本版本的总结图号、source_figure和图片路径保存至review/summary-XXX-figure-map.json供复核；该映射不写入成稿，也不替代Agent核对正文图号。
+build另将本版本的总结图号、source_figure和图片路径保存至review/<实际文件主名>-figure-map.json供复核；该映射不写入成稿，也不替代Agent核对正文图号。
 
-同时生成review/summary-XXX-build.json，将该DOCX绑定到源PDF、report.json、图片和裁图坐标。交付前memory check --artifact核对这些哈希，防止检查新正文却交付旧Word。旧版没有构建记录的文档须用当前脚本重建并复核；禁止手填构建记录。正常修订修改JSON后重新build。直接在Word修改会使记录失效，应把修改回写到输入或生成逻辑后重建；特殊补充脚本或合集暂不支持这套自动绑定，须明确记录该限制并独立核验实际输出，不能宣称自动交付检查通过。
+同时生成review/<实际文件主名>-build.json，将该DOCX绑定到源PDF、report.json、图片和裁图坐标。交付前memory check --artifact核对这些哈希，防止检查新正文却交付旧Word。旧版没有构建记录的文档须用当前脚本重建并复核；禁止手填构建记录。正常修订修改JSON后重新build。直接在Word修改会使记录失效，应把修改回写到输入或生成逻辑后重建；特殊补充脚本或合集暂不支持这套自动绑定，须明确记录该限制并独立核验实际输出，不能宣称自动交付检查通过。
 
 ```text
 python "<skill目录>/scripts/content_review.py" prepare --workspace "<论文目录>"
-# Agent实际阅读、对照原文、修正，并完成review/content-review.md后：
+# Agent实际阅读、对照原文、修正，并完成content-review.md及content-claims.json后：
+python "<skill目录>/scripts/content_review.py" verify --workspace "<论文目录>"
 python "<skill目录>/scripts/content_review.py" record --workspace "<论文目录>"
 python "<skill目录>/scripts/content_review.py" build --workspace "<论文目录>"
-python "<skill目录>/scripts/validate_summary.py" "<论文目录>/final/summary-001.docx" --expected-papers 1
+python "<skill目录>/scripts/validate_summary.py" "<论文目录>/final/<实际文件主名>.docx" --expected-papers 1
 ```
 
 正文数据由Agent生成，用户无需手工填写JSON。Word生成器固定最新字体字号、无项目符号、无自动多级编号及中文题目在前/英文截图在后的顺序。裁图工具提供部分可疑文字告警和复核门槛，但不能自动判定图片完整，也不保证分页完美。通过现有Word或LibreOffice等工具导出PDF到同一`final/`，再用下列命令生成逐页预览：
 
 ```text
-python "<工具>" pages --workspace "<论文目录>" --pdf "final/summary-001.pdf"
+python "<工具>" pages --workspace "<论文目录>" --pdf "final/<实际文件主名>.pdf"
 ```
 
 观察渲染后需要换页时，可在对应方法/结论小节增加`"page_break_before": true`，脚本将插入显式分页符；不要给所有段落套keep-with-next。修改JSON后重新build得到新版本，保留旧稿。图片不能读清时重新crop，更新路径后再build。最终选择通过内容、结构和视觉检查的版本交付。

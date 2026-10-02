@@ -11,6 +11,27 @@ from paper_artifacts import (initialize, crop, build, inside, save_json, read_js
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_final_name_uses_title_and_preserves_versions(self):
+        self.data['title_zh'] = '复合材料的损伤与性能'
+        save_json(self.root/'draft/report.json', self.data)
+        first = build(self.root)
+        before = first.read_bytes()
+        second = build(self.root)
+        self.assertEqual(first.name, '复合材料的损伤与性能.docx')
+        self.assertEqual(second.name, '复合材料的损伤与性能-002.docx')
+        self.assertEqual(first.read_bytes(), before)
+        self.assertEqual(read_json(self.root/'review'/f'{second.stem}-build.json')['artifact'],
+                         second.relative_to(self.root).as_posix())
+
+    def test_title_filename_safety_and_existing_records(self):
+        from paper_artifacts import title_output
+        self.assertEqual(title_output(self.root,'A/B:C?').name, 'A_B_C_.docx')
+        self.assertEqual(title_output(self.root,'CON').name, '_CON.docx')
+        long_name = title_output(self.root,'材料'*200)
+        self.assertLessEqual(len(long_name.name.encode('utf-8')),255)
+        (self.root/'review'/'已有标题-build.json').write_text('{}')
+        self.assertEqual(title_output(self.root,'已有标题').name,'已有标题-002.docx')
+
     def test_caption_panel_coverage_and_real_descriptions(self):
         f=self.data['conclusions'][0]['figures'][0]
         f.update(panel_labels=['a','b'],caption='形貌对比。（a）HBA；（b）HCB。')

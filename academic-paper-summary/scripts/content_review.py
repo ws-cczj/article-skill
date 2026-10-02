@@ -7,7 +7,10 @@ import argparse
 from pathlib import Path
 import sys
 
-from paper_artifacts import inside, digest, read_json, save_json
+from paper_artifacts import inside, digest, read_json, save_json, citation_paragraphs
+from review_claims import seed, validate
+
+CLAIMS = 'review/content-claims.json'
 
 
 def snapshot(root, content):
@@ -29,7 +32,7 @@ def prose(data):
                     lines += [paragraph, '']
                 for figure in item.get('figures', []):
                     lines += [f'图{figure["number"]} {figure["caption"]}', '']
-    lines += ['## 引用格式', '', data.get('citation', ''), '']
+    lines += ['## 引用格式', '', '\n\n'.join(citation_paragraphs(data.get('citation', ''))), '']
     return '\n'.join(lines)
 
 
@@ -38,6 +41,10 @@ def prepare(root, content='draft/report.json'):
     review.mkdir(exist_ok=True)
     text = prose(read_json(inside(root, content)))
     (review / 'content-draft.md').write_text(text, encoding='utf-8')
+    # Preserve edited evidence. A new candidate file makes changed quotes explicit.
+    target = root / CLAIMS
+    save_json(review / 'content-claims-candidate.json' if target.exists() else target,
+              seed(read_json(inside(root, content))))
     inputs = snapshot(root, content)
     inputs['review/content-draft.md'] = digest(review / 'content-draft.md')
     save_json(review / 'content-prepared.json', {'inputs': inputs})
@@ -59,7 +66,9 @@ def record(root, notes, content='draft/report.json'):
         raise ValueError('Review notes must be separate from the reading copy')
     if not note_path.read_text(encoding='utf-8').strip():
         raise ValueError('Actual review notes are required')
+    validate(read_json(inside(root, content)), read_json(root / CLAIMS))
     expected[notes] = digest(note_path)
+    expected[CLAIMS] = digest(root / CLAIMS)
     receipt = {'inputs': expected, 'notes': notes,
                'scope': 'Agent-declared content review; not automated fact verification'}
     save_json(root / 'review/content-approved.json', receipt)
@@ -69,10 +78,11 @@ def record(root, notes, content='draft/report.json'):
 def check(root, content='draft/report.json'):
     receipt = read_json(root / 'review/content-approved.json')
     expected = snapshot(root, content)
-    for name in ('review/content-draft.md', receipt['notes']):
+    for name in ('review/content-draft.md', receipt['notes'], CLAIMS):
         expected[name] = digest(inside(root, name))
     if receipt['inputs'] != expected:
         raise ValueError('Content review is stale; review changed content and record again')
+    validate(read_json(inside(root, content)), read_json(root / CLAIMS))
     return receipt
 
 
@@ -84,7 +94,7 @@ def reviewed_build(root, content='draft/report.json'):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['prepare', 'record', 'check', 'build'])
+    parser.add_argument('action', choices=['prepare', 'verify', 'record', 'check', 'build'])
     parser.add_argument('--workspace', required=True)
     parser.add_argument('--content', default='draft/report.json')
     parser.add_argument('--notes', default='review/content-review.md')
@@ -93,6 +103,10 @@ def main():
     try:
         if args.action == 'prepare':
             print(prepare(root, args.content))
+        elif args.action == 'verify':
+            results = validate(read_json(inside(root, args.content)), read_json(root / CLAIMS))
+            print(f'Draft quotes and review fields match; {len(results)} calculations checked. '
+                  'Source truth and scientific interpretation still require agent review.')
         elif args.action == 'record':
             record(root, args.notes, args.content)
             print('Review recorded for current inputs; scientific judgment remains the agent responsibility.')
@@ -101,7 +115,7 @@ def main():
             print('Content review matches current inputs.')
         else:
             print(reviewed_build(root, args.content))
-    except (OSError, ValueError, KeyError) as exc:
+    except (OSError, ValueError, KeyError, TypeError, OverflowError) as exc:
         print(f'ERROR: {exc}', file=sys.stderr)
         return 1
     return 0

@@ -46,6 +46,24 @@ def unique_file(folder, stem, extension):
     raise ValueError('Too many output versions')
 
 
+def title_output(root, title):
+    """Use the summary title; preserve prior documents and their review records."""
+    stem = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', title).strip(' .') or '论文总结'
+    if re.match(r'^(?:CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])(?:\.|$)', stem, re.I):
+        stem = '_' + stem
+    # Leave room for version suffixes and companion review filenames on common filesystems.
+    while len(stem.encode('utf-8')) > 200:
+        stem = stem[:-1]
+    stem = stem.rstrip(' .')
+    for number in range(1, 10000):
+        name = stem if number == 1 else f'{stem}-{number:03}'
+        output = root / 'final' / f'{name}.docx'
+        if not output.exists() and not any((root / 'review' / f'{name}{suffix}').exists()
+                for suffix in ('-build.json', '-figure-map.json')):
+            return output
+    raise ValueError('Too many output versions')
+
+
 def initialize(pdf, output_root, name=None):
     import fitz
     source = Path(pdf).resolve()
@@ -243,6 +261,16 @@ def render_pages(root, pdf_relative, pages, dpi=110):
             doc[n-1].get_pixmap(matrix=fitz.Matrix(dpi/72,dpi/72),colorspace=fitz.csRGB,alpha=False).save(target)
             stamp.write_text(digest(target))
     return out
+
+
+def citation_paragraphs(citation):
+    """Separate the trailing DOI from the bibliography without changing its value."""
+    match = re.search(r'\s*(?:DOI\s*[:：]\s*|https?://(?:dx\.)?doi\.org/)'
+                      r'(10\.\d{4,9}/\S+)\s*$', citation, flags=re.I)
+    if not match:
+        return [citation.strip()]
+    bibliography = citation[:match.start()].strip()
+    return ([bibliography] if bibliography else []) + ['DOI: ' + match.group(1)]
 
 
 def validate_citation(data):
@@ -449,11 +477,13 @@ def build(root, content='draft/report.json'):
             figures(item.get('figures',[]))
     paragraph('四、创新点','Heading 2')
     for n,text in enumerate(data['innovations'],1):paragraph(f'{n}. {text}')
-    paragraph('五、引用格式','Heading 2');paragraph(data['citation'],'Citation')
+    paragraph('五、引用格式','Heading 2')
+    for citation_line in citation_paragraphs(data['citation']):
+        paragraph(citation_line,'Citation')
     footer=sec.footer.paragraphs[0];footer.alignment=WD_ALIGN_PARAGRAPH.CENTER
     field=OxmlElement('w:fldSimple');field.set(qn('w:instr'),'PAGE');footer._p.append(field)
     doc.core_properties.title=data['title_zh']
-    output=unique_file(root/'final','summary','.docx');doc.save(output)
+    output=title_output(root,data['title_zh']);doc.save(output)
     save_json(root/'review'/f'{output.stem}-figure-map.json',[
         dict(number=f['number'],source_figure=f.get('source_figure'),image=f['image'])
         for section in ['methods','conclusions'] for item in data[section] for f in item.get('figures',[])])

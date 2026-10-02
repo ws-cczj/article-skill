@@ -20,7 +20,7 @@ record的kind分为issue、evidence、index。issue初始open，实际修正并�
 
 ## 用户另附指导文件时
 
-稳定的老师要求和范例写法保留在skill的references中，正常生成不重复拆解附件。用户本次额外提供指导文件或示例时，将原件及可检索提取结果放入当前论文目录的`source/reference/`；版式预览放`review/`。先核对文件内容或哈希，已有相同附件的可用提取结果时复用，不反复转换。附件不随skill公开分发。
+稳定的老师要求和范例写法保留在skill的references中，正常生成不重复拆解附件。用户本次额外提供指导文件或示例时，将原件及可检索提取结果放入当前论文目录的`source/reference/`；版式预览放`review/`。先核对文件内容或哈希，已有相同附件的可用提取结果时复用，不反复转换。附件不随skill公开分发。若只是使用内置公众号写作样本，在已有synthesis.md简记相关例号与迁移边界即可；不向每篇memory复制截图或整份范例，不把参考文的数值登记为当前论文的verified证据。
 
 在`memory/requirements.md`简记“来源角色—可迁移规则/写法—本次应用—用户覆盖/冲突—出处”。区分章节、格式和论述方式与示例自身的材料、数值、方法、引用；发现示例中的事实错误，只记录并隔离，不将其固化为模板答案。记录当前skill版本或所用规则快照，接手时仍以最新用户要求为准。通用写作规律可维护到references；一篇论文的事实与本次偏好留在任务目录，不自动升级为通用规则。
 
@@ -64,7 +64,7 @@ reject-crop自动登记一条issue，同时保留原来的坏图哈希拒用机�
 阅读与文字起草时允许存在未解决问题。第一次Word生成前须完成content-self-review.md规定的内容自审；不能带着未解决的关键内容问题先排版。通过内容自审后的Word仍是待视觉检查的草稿，不能直接交付。完成内容核查、裁片核查和最终Word视觉检查后执行：
 
 ```text
-python "<记忆工具>" check --workspace "<论文目录>" --artifact "final/summary-005.docx"
+python "<记忆工具>" check --workspace "<论文目录>" --artifact "final/<实际文件主名>.docx"
 ```
 
 有open问题、过期依赖或源PDF变更时退出1，禁止交付；输入/内容检查出错退出2。已记录但未核实的证据列在unverified_records，不作为可复用事实；若成稿使用了它，必须先核实。无需使用的线索可保留，不能影响检查结论的真实性。
@@ -73,4 +73,4 @@ python "<记忆工具>" check --workspace "<论文目录>" --artifact "final/sum
 
 交付检查还调用已有内容校验（包括裁片复核与拒用），核对build自动生成的构建记录，保存成稿、源PDF、report.json、图片与坐标及记忆记录哈希。缺构建记录、Word被修改或输入与构建时不同会拒绝检查，必须重新build及复核，不能拿任意文件或旧Word配合新正文通过。默认检查draft/report.json；自定义内容路径使用--content。该记录仅适用于当时版本；随后任何改稿、换图或修改记忆都须重新检查。退出0仅表示没有已登记的阻塞问题，不是科学正确性或视觉质量认证，缺少问题记录更不等于无问题。分类汇总、整体复读和逐页视觉核查仍须实际完成，脚本不能验证这些阅读行为。
 
-在quality-gates的五个检查点中使用这些记录，review/evidence-review.md可放较长对照材料并被记录引用，不再维护另一套矛盾的通过状态。原文索引和页面缓存仍使用现有source/review文件，memory只存定位与复用依据，减少重复提取和无效生成。遇到新疑点仍回到原文，不能以记忆代替核验。
+按quality-gates索引使用这些记录。逐项核查以review/content-claims.json为准，整体判断和修订以review/content-review.md为准；memory记录只引用相关位置，不另建review/evidence-review.md或重复的通过状态。原文索引和页面缓存仍使用现有source/review文件，memory只存定位与复用依据，减少重复提取和无效生成。遇到新疑点仍回到原文，不能以记忆代替核验。

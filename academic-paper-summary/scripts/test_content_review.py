@@ -4,7 +4,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from content_review import prepare, record, check, reviewed_build
-from paper_artifacts import save_json
+from paper_artifacts import save_json, read_json
+from review_claims import seed
 
 
 class ContentReviewTests(unittest.TestCase):
@@ -25,6 +26,14 @@ class ContentReviewTests(unittest.TestCase):
 
     def approve(self):
         prepare(self.root)
+        claims = seed(self.data)
+        for row in claims['claims']:
+            row.update(status='verified', source='合成源第1页', evidence='测试证据',
+                       judgment='测试判断', prior_work='测试基线', increment='测试增量', value='测试价值')
+        for row in claims['sections']:
+            row.update(status='verified', question='合成研究问题', takeaway='合成认识',
+                       evidence_use='合成证据支持比较', coherence_review='合成段落回答问题')
+        save_json(self.root / 'review/content-claims.json', claims)
         record(self.root, self.notes)
 
     def test_export_includes_prose_and_captions(self):
@@ -45,7 +54,7 @@ class ContentReviewTests(unittest.TestCase):
             builder.assert_called_once_with(self.root, 'draft/report.json')
 
     def test_changed_dependencies_block_build(self):
-        for name in ('draft/report.json', 'source/paper.pdf', self.notes, 'review/content-draft.md'):
+        for name in ('draft/report.json', 'source/paper.pdf', self.notes, 'review/content-draft.md', 'review/content-claims.json'):
             with self.subTest(name=name):
                 self.approve()
                 path = self.root / name
@@ -71,6 +80,19 @@ class ContentReviewTests(unittest.TestCase):
             check(self.root)
         (self.root / self.notes).write_text(' ', encoding='utf-8')
         with self.assertRaises(ValueError):
+            record(self.root, self.notes)
+
+    def test_correct_review_sentence_cannot_hide_wrong_draft(self):
+        self.approve()
+        claims = read_json(self.root / 'review/content-claims.json')
+        claims['claims'][0]['quote'] = '审查者另外写了一句正确的话'
+        save_json(self.root / 'review/content-claims.json', claims)
+        with self.assertRaisesRegex(ValueError, 'differs from actual draft'):
+            record(self.root, self.notes)
+
+    def test_pending_claims_cannot_be_approved(self):
+        prepare(self.root)
+        with self.assertRaisesRegex(ValueError, 'Unresolved claim'):
             record(self.root, self.notes)
 
 

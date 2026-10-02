@@ -12,15 +12,11 @@ Optional collection title: a field topic or “文献调研”. It may appear on
 
 ### Paper heading
 
-Use a concise, engaging Chinese academic title for a public-account article: lead with a supported finding, contrast or tradeoff, while clearly identifying the object. A short hook plus explanatory subtitle is acceptable. Avoid automatically settling for the flat “effect of X on Y” wording; accuracy takes priority over novelty claims. Avoid literal translation or stacking every material, geometry and test name; retain details necessary to identify scope. Do not invent a mechanism or force causal phrasing. Follow the title examples in [example-writing-patterns.md](example-writing-patterns.md); avoid conversational instructions or promotional hooks. The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author/affiliation-and-address area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
+Use a concise, natural Chinese academic title following the supplied teacher's public-account examples: identify the study object and its central topic or supported finding. Descriptive titles about response, performance, mechanism, design or modeling are valid; “effect of X on Y” is acceptable when clear and accurate. Questions, contrasts, metaphors and subtitles are optional, not a default hook. Preserve scope and avoid forced phrasing or exaggeration. Follow the title guidance in [example-writing-patterns.md](example-writing-patterns.md). The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author/affiliation-and-address area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
 
 ### 一、研究背景
 
-Paragraph 1: broader research or application problem.
-
-Paragraph 2: limitations or unresolved gap in existing work.
-
-Paragraph 3: what this paper studies and why its design addresses the gap.
+Use 2–3 connected paragraphs covering the research/application problem, the unresolved gap, and the current paper’s objective. Combine these functions naturally; they are not three mandatory paragraph slots.
 
 ### 二、研究方法
 
@@ -49,7 +45,7 @@ This section explains the paper's substantive findings and their relationships. 
 
 ### 四、创新点
 
-List three concrete contributions. Expand each into a compact paragraph, usually 2–3 sentences stating the contribution, a supported distinction, and its specific significance where evidenced. Avoid slogans, speculative novelty, padding, and merely repeating result numbers. Use numbered points or short paragraphs, not bullet dots; make the boundaries between points obvious.
+List three concrete contributions. Expand each into a compact paragraph stating the contribution, a supported distinction, and its specific significance where evidenced. Sentence count and order follow the content; 2–3 sentences is only a common length, not an acceptance criterion. Avoid slogans, speculative novelty, padding, and merely repeating result numbers. Use numbered points or short paragraphs, not bullet dots; make the boundaries between points obvious.
 
 Before drafting, identify each contribution's baseline or unresolved problem as described in the source paper, the actual increment, and the evidence and specific value of that increment. Rewording three findings, listing tools, or presenting untested future suggestions is insufficient. Do not force every paper into method/mechanism/model categories. If three distinct contributions cannot be supported after rereading, disclose the shortfall instead of inventing novelty to satisfy the format.
 
@@ -59,7 +55,7 @@ Give one exact citation for this paper only. Never place another paper's citatio
 
 “引用格式”指当前被总结论文自身的引用条目，不是固定范例，也不是该论文末尾参考文献列表中的条目。只模仿格式，不能复用范例中的作者、题名、期刊、年份或DOI。每次从当前PDF首页和出版信息提取原文作者（保持顺序）、完整原文题名、期刊、出版年份、卷（期）、页码或文章号、DOI，核对后填写。SCI英文论文保留英文书目信息，不能用自行拟定的中文总结题目替代原文题名。
 
-默认排列为“作者. 原文题名[J]. 期刊, 年, 卷(期): 页码或文章号. DOI.”；该句只是字段顺序，不可原样放进成稿。用户或老师明确指定其他引用样式时从其要求，引用对象始终不变。不得把收稿日期、版权日期直接当出版年份。未核实的卷期页码或DOI不得编造；必要时通过该论文DOI对应的出版商页面核实，仍无法确认则省略未核实字段并在交付说明中指出。
+书目段排列为“作者. 原文题名[J]. 期刊, 年, 卷(期): 页码或文章号.”，已核实的DOI另起末尾一段；这里仅说明字段顺序，不可原样放进成稿。用户或老师明确指定其他引用样式时从其要求，引用对象始终不变。不得把收稿日期、版权日期直接当出版年份。未核实的卷期页码或DOI不得编造；必要时通过该论文DOI对应的出版商页面核实，仍无法确认则省略未核实字段并在交付说明中指出。
 
 在report.json中填写citation_metadata，包含original_title、authors数组、journal、year（字符串），以及已核实的doi（有则填）。citation写最终完整条目。build会拒绝缺少元数据、题名或年份不匹配、遗漏已核实DOI的引用。该检查只能验证两者一致，不能替代与源PDF核对作者、期刊、卷期、页码及论文身份；不能为绕过检查而让元数据迎合错误引用。独立结构检查器validate_summary.py仅检查引用存在和年份，不证明引用对象正确。
 
@@ -85,3 +81,5 @@ Paper 2 heading
 No paper may borrow a section, figure, or citation from a neighboring block.
 
 For DOCX, apply the mandatory Chinese/Latin fonts, sizes and bold settings in [output-formats.md](output-formats.md). Semantic chapter level and Word style ID are mapped there; do not confuse the paper title with the first-level chapter headings.
+
+Citation layout: place the bibliographic entry first, then a separate final paragraph beginning `DOI: ` with the verified DOI. Both use Times New Roman 12pt. In report.json, citation may contain a newline before the trailing DOI; the builder also separates an existing inline trailing DOI or doi.org URL automatically. Omit the DOI paragraph when no DOI is verified.
