@@ -90,6 +90,8 @@ Word排版前先完成[全文自审](academic-paper-summary/references/content-s
 
 自审现直接绑定稿件原句：prepare生成逐项审核候选，verify核对当前原句、审核状态、创新依据字段及明确提供的比例计算；修订正文后须同步受影响的行。程序提供角度单位、倍率措辞和部分强判断的疑点提示，不自动猜测科学含义或改写事实。已有Markdown审核记录需要补齐逐项数据后再放行，详见[审核数据格式](academic-paper-summary/references/review-claims-schema.md)。维护与模型实测按[回归评估说明](academic-paper-summary/references/skill-evaluation.md)区分已知失败案例与未用于示范的论文。
 
+成稿用于提交给老师作为公众号文章，忠实介绍论文发现和贡献；数据核查过程、取值冲突和编辑质疑保存在内部review/memory，不进入正文。保留原文必要的试验条件与推测性质，不自行给每条结论追加局限性。
+
 主要结论另做整节叙述检查：每节围绕一个研究认识选择证据，图片辅助说明；即使事实都准确，也不能用图像信息与数据清单替代论述。整节审核保存在同一content-claims.json的sections中，绑定实际小标题和全文，不以图号数量、数字密度或固定句式判断质量。
 
 最终Word以中文总结标题命名；同名重建保留旧稿并追加版本后缀。导出PDF沿用对应Word的主文件名，只有非法字符、系统保留名或过长名称作必要处理。

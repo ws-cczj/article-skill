@@ -37,7 +37,8 @@ Order findings by their actual evidentiary relationships: observed changes, comp
 1. a heading stating a concrete observed change, comparison, relationship or supported mechanism, not a generic method assessment;
 2. a coherent account of the finding, relevant comparisons and supported interpretation, with order and phrasing chosen for the research narrative rather than a fixed sentence template;
 3. supporting figures and captions near the relevant discussion; captions explain actual panels in source-label order, while prose references or discusses figures only as useful for understanding, without mandatory panel-by-panel coverage;
-4. a limitation or scope statement where needed.
+
+Integrate source-supported conditions into the relevant finding when they change its meaning; do not add a separate limitation item or reviewer commentary. This is an article for the teacher’s public account. Keep source discrepancies, calculation audits and editorial doubts in review/memory; use the handling guidance in [content-self-review.md](content-self-review.md) when they affect accurate summarization.
 
 Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.
 

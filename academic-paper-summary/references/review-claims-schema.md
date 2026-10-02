@@ -9,7 +9,7 @@ prepare导出阅读稿并首次生成review/content-claims.json。再次prepare�
 - source：当前论文可定位的页码、图表或段落。
 - evidence：源文实际事实或短摘录，写清样品、条件及物理量定义；图像证据可写具体观察。
 - judgment：原句与证据的关系、范围、推断强度及修订结果，不只写“通过”。
-- status：pending待查；verified实际核实；qualified必要限定已写入正文。未核实的肯定断言不能用qualified放行。
+- status：pending待查；verified实际核实；qualified原文结论所需的条件或推测性质已准确保留在正文（不是要求写审稿意见）。未核实的肯定断言不能用qualified放行。
 - 创新行另填prior_work、increment、value，分别说明已有工作、实际增量和具体意义。
 - 含数字及倍/%的行填numeric_check：kind为reported/calculated/mixed，basis解释原始量与派生量。calculated/mixed须填calculations；不能将衍生比例改为reported来逃避复算。
 
