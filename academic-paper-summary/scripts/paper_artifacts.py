@@ -446,7 +446,12 @@ def build(root, content='draft/report.json'):
         fmt.keep_with_next=False;fmt.keep_together=False;fmt.page_break_before=False
         fmt.line_spacing=1.3;fmt.space_after=Pt(6)
     def paragraph(text,style='Normal'):
-        p=doc.add_paragraph(text,style)
+        from scientific_text import add_scientific_text
+        p=doc.add_paragraph(style=style)
+        if style == 'Citation':
+            p.add_run(text)  # Preserve bibliographic text and DOI verbatim.
+        else:
+            add_scientific_text(p, text)
         p.paragraph_format.keep_with_next=False;p.paragraph_format.keep_together=False;p.paragraph_format.page_break_before=False
         if style=='Normal':p.paragraph_format.first_line_indent=Cm(.74)
         return p
