@@ -487,7 +487,8 @@ def build(root, content='draft/report.json'):
         paragraph(citation_line,'Citation')
     footer=sec.footer.paragraphs[0];footer.alignment=WD_ALIGN_PARAGRAPH.CENTER
     field=OxmlElement('w:fldSimple');field.set(qn('w:instr'),'PAGE');footer._p.append(field)
-    doc.core_properties.title=data['title_zh']
+    from document_properties import prepare_report_properties
+    prepare_report_properties(doc, data['title_zh'])
     output=title_output(root,data['title_zh']);doc.save(output)
     save_json(root/'review'/f'{output.stem}-figure-map.json',[
         dict(number=f['number'],source_figure=f.get('source_figure'),image=f['image'])
