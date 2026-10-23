@@ -16,7 +16,7 @@ Use a concise, natural Chinese academic title following the supplied teacher's p
 
 ### 一、研究背景
 
-Use 2–3 connected paragraphs covering the research/application problem, the unresolved gap, and the current paper’s objective. Combine these functions naturally; they are not three mandatory paragraph slots.
+Use exactly three connected body paragraphs: (1) the research/application problem and its context; (2) existing work and the unresolved gap; (3) the current study’s objective and approach. Ground all three in the source paper, maintain natural transitions, and do not add subheadings or mechanically split sentences to meet the count. Do not invent gaps or pad the background.
 
 ### 二、研究方法
 

@@ -29,6 +29,8 @@
 
 Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支的最新版本；有更新则先更新完整skill并重新读取规则，再开始总结。同一任务不在中途切换版本。本地修改不会被强制覆盖，必要时在独立目录使用官方最新版。Git与ZIP安装均有处理路径，详见[更新流程](academic-paper-summary/references/update-workflow.md)。
 
+预置`check_skill_update.py`先比较版本：Git提交相同且技能目录干净时立即结束；ZIP/复制安装比较远程文件清单及本地哈希；一致时不clone。只有需要不同的官方版本时才下载，Git安装优先fetch与fast-forward。
+
 这是Agent执行的前置流程，不是后台自动更新服务。需要网络及相应工具权限；检查失败会说明原因，不会假称已更新。用户可明确要求离线或固定版本。已安装旧版的用户需先更新一次，才能获得这项新规则。
 
 ## 环境准备
@@ -79,6 +81,8 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 多篇论文：
 
 > 使用 $academic-paper-summary，分别总结这些论文，每篇单独生成Word文档。
+
+所有机器均须调用安装目录内的`paper_artifacts.py init`，在用户工作区或当前任务的可写目录下创建独立论文目录，包含`source/`（单数）、`assets/`、`draft/`、`review/`、`memory/`、`final/`及manifest.json。Agent应报告目录绝对路径；只看到最终下载文件不代表中间目录不存在，云端任务的工作目录也不等于本机桌面。若没有这些目录，检查技能是否完整加载、init是否执行成功及输出位置；不得仅凭技能名称宣称使用了完整流程。
 
 默认逐篇创建独立目录和成稿。只有明确要求合集时，才额外汇编。用户不需要填写JSON、提供裁图坐标或编写Python脚本。
 

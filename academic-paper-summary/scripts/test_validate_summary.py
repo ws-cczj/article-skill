@@ -26,32 +26,42 @@ def fixture():
         Paragraph('五、引用格式', 'Heading 2'), Paragraph('测试引用，2020。')])
     block.paragraphs[13:13]=[p for n in range(2,6) for p in
         (Paragraph(f'{n}. 独立测试发现', 'Heading 3'),Paragraph('该发现的证据与解释。'))]
+    block.paragraphs.insert(4, Paragraph('背景三。'))
     return block
 
 class ValidatorTests(unittest.TestCase):
+    def test_background_requires_three_paragraphs(self):
+        for count in (2, 4):
+            b = fixture()
+            if count == 2:
+                del b.paragraphs[4]
+            else:
+                b.paragraphs.insert(4, Paragraph('额外背景。'))
+            self.assertTrue(any('研究背景必须为3' in e for e in validate_block(b, 0)[0]))
+
     def test_at_least_five_findings_not_six_or_figure_quota(self):
         b=fixture()
         self.assertEqual(validate_block(b,0)[0],[])
-        del b.paragraphs[13:15]
+        del b.paragraphs[14:16]
         self.assertTrue(any('至少5项' in x for x in validate_block(b,0)[0]))
         b=fixture()
-        b.paragraphs[13:13]=[Paragraph(f'{n}. 更多发现','Heading 3') for n in (6,7)]
+        b.paragraphs[14:14]=[Paragraph(f'{n}. 更多发现','Heading 3') for n in (6,7)]
         self.assertEqual(validate_block(b,0)[0],[])
     def test_repeated_figure_led_prose_warns_without_treating_it_as_caption(self):
-        b=fixture();b.paragraphs[10]=Paragraph('图1 上排展示形貌。','Normal')
+        b=fixture();b.paragraphs[11]=Paragraph('图1 上排展示形貌。','Normal')
         b.paragraphs.insert(11,Paragraph('图1 下排展示另一组。','Normal'))
         self.assertTrue(any('读图清单' in x for x in validate_block(b,1)[1]))
-        b.paragraphs[10].text='处理后损伤减轻，比较见图1。'
+        b.paragraphs[11].text='处理后损伤减轻，比较见图1。'
         self.assertFalse(any('读图清单' in x for x in validate_block(b,1)[1]))
 
     def test_supporting_figure_does_not_require_explicit_prose_reference(self):
         b=fixture()
         self.assertFalse(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
-        b.paragraphs[10].text='图1给出测试证据。'
+        b.paragraphs[11].text='图1给出测试证据。'
         self.assertFalse(any('正文未明确引用' in x for x in validate_block(b,1)[1]))
 
     def test_source_numbering_cannot_replace_report_sequence(self):
-        b=fixture();b.paragraphs[12].text='图7 测试图注'
+        b=fixture();b.paragraphs[13].text='图7 测试图注'
         self.assertTrue(any('连续编号' in x for x in validate_block(b,1)[0]))
 
     def test_valid_structure(self):
@@ -66,15 +76,15 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(figure_ids('图1 表1 Fig. 1 Table 1 图2'), {'figure:1','table:1','figure:2'})
 
     def test_caption_without_image_fails(self):
-        b = fixture(); b.paragraphs[11].images = 0
+        b = fixture(); b.paragraphs[12].images = 0
         self.assertTrue(any('图片' in x for x in validate_block(b,1)[0]))
 
     def test_repeated_figure_does_not_meet_count(self):
-        b = fixture(); b.paragraphs[13:13] = [Paragraph('',images=1), Paragraph('图1 重复图注')]
+        b = fixture(); b.paragraphs[14:14] = [Paragraph('',images=1), Paragraph('图1 重复图注')]
         self.assertTrue(any('不同图注' in x for x in validate_block(b,2)[0]))
 
     def test_wrong_subheading_level_fails(self):
-        b = fixture(); b.paragraphs[5].style='Heading 2'
+        b = fixture(); b.paragraphs[6].style='Heading 2'
         self.assertTrue(any('同级' in x for x in validate_block(b,1)[0]))
 
     def test_extra_innovation_fails(self):
@@ -84,17 +94,17 @@ class ValidatorTests(unittest.TestCase):
     def test_empty_citation_and_out_of_order_fail(self):
         b=fixture();b.paragraphs[-1].text=''
         self.assertTrue(any('citation' in x for x in validate_block(b,1)[0]))
-        b=fixture();b.paragraphs[1],b.paragraphs[4]=b.paragraphs[4],b.paragraphs[1]
+        b=fixture();b.paragraphs[1],b.paragraphs[5]=b.paragraphs[5],b.paragraphs[1]
         self.assertTrue(any('顺序' in x for x in validate_block(b,1)[0]))
 
     def test_method_assessment_is_flagged(self):
-        b=fixture();b.paragraphs[9].text='1. 方法具有半定量性质'
+        b=fixture();b.paragraphs[10].text='1. 方法具有半定量性质'
         self.assertTrue(any('方法评价' in x for x in validate_block(b,1)[0]))
 
     def test_multiple_papers_keep_figures_separate(self):
         p=fixture().paragraphs+copy.deepcopy(fixture().paragraphs)
         blocks=detect_blocks(p);self.assertEqual(len(blocks),2)
-        blocks[1].paragraphs[11].images=0
+        blocks[1].paragraphs[12].images=0
         self.assertEqual(validate_block(blocks[0],1)[0],[])
         self.assertTrue(validate_block(blocks[1],1)[0])
 

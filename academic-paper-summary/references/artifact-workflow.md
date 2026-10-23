@@ -10,6 +10,8 @@
 python "<工具>" init --pdf "<原论文.pdf>" --output-root "<工作区>/outputs"
 ```
 
+已安装skill与开发仓库执行同一个init入口，不依赖当前工作目录或开发者电脑路径。`<工作区>`指用户当前项目或任务的可写输出位置；不要默认写入skill安装目录。init成功后检查manifest.json与source、assets、draft、review、memory、final六个目录，并向用户报告返回的绝对路径。若其他机器没有这些目录，先检查实际加载的SKILL.md路径、版本检查结果、init命令/报错和返回的输出路径；缺少日志时不能断言是操作系统差异。
+
 每次init都产生包含时间、论文名和随机短标记的新目录，不覆盖历史目录：
 
 ```text
@@ -69,7 +71,7 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
 {
   "title_zh": "中文总结题目（必填，可编辑文字）",
   "identity_images": ["assets/identity-001.png"],
-  "background": ["背景第一段", "背景第二段"],
+  "background": ["研究问题与背景", "已有研究及不足", "研究目的与思路"],
   "methods": [
     {
       "heading": "材料设计与制备",

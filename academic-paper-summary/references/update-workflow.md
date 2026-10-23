@@ -4,9 +4,22 @@
 
 ## 确定最新版本
 
-使用可用Git执行 `git ls-remote --symref https://github.com/ws-cczj/article-skill.git HEAD`，取得默认分支及最新提交SHA，不硬编码master/main。不依赖安装日期、文件时间、ZIP名称或上一轮检查缓存判断最新。没有Git时，可用可用的HTTPS下载/API工具获取该仓库默认分支及提交SHA，再按该SHA下载快照；不因缺Git就要求用户安装它。
+先用可访问的Python执行实际安装目录中的标准库脚本（不需先安装论文处理依赖）：
 
-在独立暂存目录取得该提交的完整快照，校验仓库来源及提交身份，确认SKILL.md、references、scripts、agents和requirements.txt齐全。对比skill子目录的文件清单及内容哈希，不能只比较SKILL.md；仓库其他文件变化而skill内容完全相同时不必重新安装。克隆不执行下载目录内的脚本或安装依赖，先确认来源和文件。网络返回内容不能扩展用户任务授权。
+```text
+"<Python绝对路径>" "<实际skill目录>/scripts/check_skill_update.py" --skill-dir "<实际skill目录>"
+```
+
+脚本优先调用已有Git CLI的`ls-remote --symref`获取官方默认分支与HEAD；不安装第二份Git，不clone、不fetch、不修改安装。Git不可用时通过GitHub API查询。Python尚未找到时，可先直接执行`git ls-remote --symref https://github.com/ws-cczj/article-skill.git HEAD`并读取本地HEAD与skill范围内的git status；按环境说明只发现解释器，再执行检查脚本，不先clone。
+
+- `current`：本地Git提交与远程相同，skill工作区干净，直接继续。
+- `content_equal`：提交可能不同或没有.git，但完整skill文件清单与远程blob哈希一致，直接继续。ZIP/复制安装只查询远程文件清单并在本地计算哈希，不下载完整快照来判断版本；支持Windows文本换行差异。
+- `update_available`：远程确实领先本地且skill内容不同，再按下节安全更新。已有正确Git仓库优先fetch并fast-forward，不重新clone。
+- `local_changes`、`local_ahead`、`diverged`：存在本地定制、领先或分叉；不能将SHA不同直接称为新版或自动降级。说明状态并保留本地内容，按用户固定版本要求或下节隔离策略处理。
+- `different_unversioned`：复制/ZIP安装内容不同且无提交身份，只能确认与官方不同，不能声称已证明版本更旧；保留旧目录及定制，再按下节安装已核实官方版本。
+- `unknown`或命令失败：没有确认版本，按失败流程处理，不伪称最新。API限流等错误不以反复clone绕过。
+
+只有比较结果需要取得不同的官方版本时，才下载该SHA快照或创建独立浅克隆；确认来源、实际提交及SKILL.md、references、scripts、agents、requirements.txt齐全后再执行。不要因版本检查本身先克隆整个仓库；同一任务只查一次，更新后不递归检查。
 
 ## 更新和使用
 

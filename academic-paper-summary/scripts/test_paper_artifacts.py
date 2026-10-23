@@ -169,11 +169,18 @@ class ArtifactTests(unittest.TestCase):
                         'Synthetic fixture: full known geometry enclosed; external caption and body excluded.')
         self.data=dict(title_zh='中文合成测试题目',identity_images=[self.identity.relative_to(self.root).as_posix()],
             methods_figure_absence_reason='',
-            background=['背景一','背景二'],methods=[dict(heading='测试方法',paragraphs=['测试内容'],figures=[dict(number=1,image=self.figure.relative_to(self.root).as_posix(),caption='合成方法图')])],
+            background=['背景一','背景二','背景三'],methods=[dict(heading='测试方法',paragraphs=['测试内容'],figures=[dict(number=1,image=self.figure.relative_to(self.root).as_posix(),caption='合成方法图')])],
             conclusions=[dict(heading='合成测试结果',paragraphs=['测试描述'],figures=[dict(number=2,image=self.figure.relative_to(self.root).as_posix(),caption='合成图注')])],
             innovations=['一项','二项','三项'],citation='Test A. English paper title and authors. Synthetic Journal, 2026.',
             citation_metadata=dict(original_title='English paper title and authors',authors=['Test A'],journal='Synthetic Journal',year='2026'))
         save_json(self.root/'draft/report.json',self.data)
+
+    def test_background_requires_exactly_three_paragraphs(self):
+        for count in (2, 4):
+            self.data['background'] = ['背景'] * count
+            save_json(self.root/'draft/report.json', self.data)
+            with self.assertRaisesRegex(ValueError, 'exactly 3 paragraphs'):
+                build(self.root)
 
     def test_workspace_and_version_isolation(self):
         second=initialize(self.root/'source/paper.pdf',self.parent/'outputs')

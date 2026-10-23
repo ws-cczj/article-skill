@@ -35,6 +35,11 @@ def workspace(path):
     root = Path(path).resolve()
     if not (root/'manifest.json').is_file():
         raise ValueError('Not a paper workspace: manifest.json missing')
+    missing = [name for name in ('source', 'assets', 'draft', 'review', 'memory', 'final')
+               if not (root/name).is_dir()]
+    if missing:
+        raise ValueError('Incomplete paper workspace: missing ' + ', '.join(missing)
+                         + '; use the init output directory or restore the missing workspace files')
     return root
 
 
@@ -311,8 +316,8 @@ def validate_content(root, data):
         raise ValueError('title_zh must contain an editable Chinese summary title')
     if not data.get('identity_images'):
         raise ValueError('English source title-area screenshot is required')
-    if not 2 <= len(data.get('background',[])) <= 3:
-        raise ValueError('background must contain 2 or 3 paragraphs')
+    if len(data.get('background',[])) != 3:
+        raise ValueError('background must contain exactly 3 paragraphs')
     if len(data.get('innovations',[])) != 3 or not nonempty(data.get('citation')):
         raise ValueError('Three innovations and a citation are required')
     validate_citation(data)
