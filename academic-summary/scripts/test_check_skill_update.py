@@ -10,7 +10,7 @@ class UpdateTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
-        self.skill = self.root / 'academic-paper-summary'
+        self.skill = self.root / 'academic-summary'
         (self.skill / 'scripts').mkdir(parents=True)
         (self.skill / 'SKILL.md').write_bytes(b'test\n')
         (self.skill / 'scripts/paper_artifacts.py').write_bytes(b'init\n')

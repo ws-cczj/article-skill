@@ -12,7 +12,7 @@ Optional collection title: a field topic or “文献调研”. It may appear on
 
 ### Paper heading
 
-Use a concise, natural Chinese academic title following the supplied teacher's public-account examples: identify the study object and its central topic or supported finding. Descriptive titles about response, performance, mechanism, design or modeling are valid; “effect of X on Y” is acceptable when clear and accurate. Questions, contrasts, metaphors and subtitles are optional, not a default hook. Preserve scope and avoid forced phrasing or exaggeration. Follow the title guidance in [example-writing-patterns.md](example-writing-patterns.md). The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author/affiliation-and-address area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
+Use a concise, natural Chinese academic title drawing on the supplied writing examples: identify the study object and its central topic or supported finding. Descriptive titles about response, performance, mechanism, design or modeling are valid; “effect of X on Y” is acceptable when clear and accurate. Questions, contrasts, metaphors and subtitles are optional, not a default hook. Preserve scope and avoid forced phrasing or exaggeration. Follow the title guidance in [example-writing-patterns.md](example-writing-patterns.md). The editable Chinese summary title is mandatory. Place a real English crop of the SCI paper’s first-page journal/title/author/affiliation-and-address area beneath it, following figure-analysis.md. Do not typeset separate “原题目/作者/期刊” introduction lines. Retain the full bibliographic citation at the end.
 
 ### 一、研究背景
 
@@ -38,7 +38,7 @@ Order findings by their actual evidentiary relationships: observed changes, comp
 2. a coherent account of the finding, relevant comparisons and supported interpretation, with order and phrasing chosen for the research narrative rather than a fixed sentence template;
 3. supporting figures and captions near the relevant discussion; captions explain actual panels in source-label order, while prose references or discusses figures only as useful for understanding, without mandatory panel-by-panel coverage;
 
-Integrate source-supported conditions into the relevant finding when they change its meaning; do not add a separate limitation item or reviewer commentary. This is an article for the teacher’s public account. Keep source discrepancies, calculation audits and editorial doubts in review/memory; use the handling guidance in [content-self-review.md](content-self-review.md) when they affect accurate summarization.
+Integrate source-supported conditions into the relevant finding when they change its meaning; do not add a separate limitation item or reviewer commentary. This is a literature summary for research reading and communication. Keep source discrepancies, calculation audits and editorial doubts in review/memory; use the handling guidance in [content-self-review.md](content-self-review.md) when they affect accurate summarization.
 
 Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.
 
@@ -56,7 +56,7 @@ Give one exact citation for this paper only. Never place another paper's citatio
 
 “引用格式”指当前被总结论文自身的引用条目，不是固定范例，也不是该论文末尾参考文献列表中的条目。只模仿格式，不能复用范例中的作者、题名、期刊、年份或DOI。每次从当前PDF首页和出版信息提取原文作者（保持顺序）、完整原文题名、期刊、出版年份、卷（期）、页码或文章号、DOI，核对后填写。SCI英文论文保留英文书目信息，不能用自行拟定的中文总结题目替代原文题名。
 
-书目段排列为“作者. 原文题名[J]. 期刊, 年, 卷(期): 页码或文章号.”，已核实的DOI另起末尾一段；这里仅说明字段顺序，不可原样放进成稿。用户或老师明确指定其他引用样式时从其要求，引用对象始终不变。不得把收稿日期、版权日期直接当出版年份。未核实的卷期页码或DOI不得编造；必要时通过该论文DOI对应的出版商页面核实，仍无法确认则省略未核实字段并在交付说明中指出。
+书目段排列为“作者. 原文题名[J]. 期刊, 年, 卷(期): 页码或文章号.”，已核实的DOI另起末尾一段；这里仅说明字段顺序，不可原样放进成稿。用户明确指定其他引用样式时从其要求，引用对象始终不变。不得把收稿日期、版权日期直接当出版年份。未核实的卷期页码或DOI不得编造；必要时通过该论文DOI对应的出版商页面核实，仍无法确认则省略未核实字段并在交付说明中指出。
 
 在report.json中填写citation_metadata，包含original_title、authors数组、journal、year（字符串），以及已核实的doi（有则填）。citation写最终完整条目。build会拒绝缺少元数据、题名或年份不匹配、遗漏已核实DOI的引用。该检查只能验证两者一致，不能替代与源PDF核对作者、期刊、卷期、页码及论文身份；不能为绕过检查而让元数据迎合错误引用。独立结构检查器validate_summary.py仅检查引用存在和年份，不证明引用对象正确。
 

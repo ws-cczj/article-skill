@@ -1,6 +1,6 @@
 # 总结前检查并更新skill
 
-每次开始一项新的文献总结任务，先检查官方GitHub仓库 `https://github.com/ws-cczj/article-skill.git` 的默认分支，再读取本次要执行的规则。更新范围为仓库内完整的 `academic-paper-summary/`。同一任务的续写、修订和多篇批量处理只在开始时检查一次，固定本轮版本，避免生成中途换规则；仅审阅已有文档或开发skill不执行自动更新。
+每次开始一项新的文献总结任务，先检查官方GitHub仓库 `https://github.com/ws-cczj/article-skill.git` 的默认分支，再读取本次要执行的规则。更新范围为仓库内完整的 `academic-summary/`。同一任务的续写、修订和多篇批量处理只在开始时检查一次，固定本轮版本，避免生成中途换规则；仅审阅已有文档或开发skill不执行自动更新。
 
 ## 确定最新版本
 

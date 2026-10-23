@@ -2,7 +2,7 @@
 
 捶捶开发的中文论文精读 Skill。安装并配置运行环境后，向 Agent 提供完整论文 PDF，即可按内置规范生成包含原文图片的 Word 总结。
 
-仓库名为 **article-skill**，实际安装的 Skill 名称为 **academic-paper-summary**。老师要求、写作规则和格式规范已包含在 Skill 中，无需再次提供老师附件、成功范例或创建时的聊天记录。
+仓库及正式技能名为 **article-skill**，仓库中的技能目录为 **academic-summary/**。它面向文献精读、研究交流与知识传播：围绕论文的研究问题组织方法、发现与贡献，结合原文图片生成可编辑的中文 Word 总结。写作示范、结构规范、图文格式和质量检查已内置，无需依赖创建时的聊天记录或额外模板。
 
 ## 安装
 
@@ -10,24 +10,28 @@
 
 在支持技能安装的 Codex 中发送：
 
-> 请使用 skill-installer，从 GitHub 仓库 ws-cczj/article-skill 安装 academic-paper-summary 目录中的 skill。
+> 请使用 skill-installer，从 GitHub 仓库 ws-cczj/article-skill 安装 academic-summary 目录中的 skill。
 
-应安装仓库中的 `academic-paper-summary/` 子目录，而不是把整个仓库当作 Skill。安装完成后，在下一轮对话确认该技能可用；Python 依赖仍需按下文配置。
+应安装仓库中的 `academic-summary/` 子目录，而不是把整个仓库当作 Skill。安装完成后，在下一轮对话确认该技能可用；Python 依赖仍需按下文配置。
 
 ### 手动安装
 
-下载或克隆本仓库，将完整的 `academic-paper-summary` 文件夹放入 Codex 的技能目录：
+下载或克隆本仓库，将完整的 `academic-summary` 文件夹放入 Codex 的技能目录：
 
-- 设置了 `CODEX_HOME`：`$CODEX_HOME/skills/academic-paper-summary/`
-- 默认位置：`~/.codex/skills/academic-paper-summary/`
+- 设置了 `CODEX_HOME`：`$CODEX_HOME/skills/academic-summary/`
+- 默认位置：`~/.codex/skills/academic-summary/`
 
-安装后应能找到 `academic-paper-summary/SKILL.md`，并保留同级的 `references/`、`scripts/`、`agents/` 和 `requirements.txt`。更新已有安装时先备份本地定制内容，再同步完整 Skill 文件夹。
+安装后应能找到 `academic-summary/SKILL.md`，并保留同级的 `references/`、`scripts/`、`agents/` 、`requirements.txt` 和 `LICENSE`。更新已有安装时先备份本地定制内容，再同步完整 Skill 文件夹。
 
 其他 Agent 可按自身技能加载机制使用；本仓库未逐一验证所有客户端，不能保证仅复制文件就能自动识别。
 
+## 从旧版迁移
+
+旧安装目录曾为`academic-paper-summary/`。请安装当前仓库的`academic-summary/`目录，重新加载技能后使用`$article-skill`。先保留旧目录及本地定制的备份，确认新技能可用后将旧技能移出技能扫描目录，避免重复加载。旧版更新脚本固定了旧远程路径，跨此次目录改名请手动更新一次；之后新版继续进行HTTPS版本检查。用户级`skill-state/article-skill`环境和已有论文目录无需迁移或删除。
+
 ## 自动更新检查
 
-Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支的最新版本；有更新则先更新完整skill并重新读取规则，再开始总结。同一任务不在中途切换版本。本地修改不会被强制覆盖，必要时在独立目录使用官方最新版。各种完整目录安装使用同一HTTPS检查流程，详见[更新流程](academic-paper-summary/references/update-workflow.md)。
+Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支的最新版本；有更新则先更新完整skill并重新读取规则，再开始总结。同一任务不在中途切换版本。本地修改不会被强制覆盖，必要时在独立目录使用官方最新版。各种完整目录安装使用同一HTTPS检查流程，详见[更新流程](academic-summary/references/update-workflow.md)。
 
 预置`check_skill_update.py`仅通过HTTPS读取GitHub提交及文件哈希清单，与本地完整目录比较；不要求用户安装Git CLI，也不在检查时clone。内容一致时不下载，存在差异时保留本地定制并安全采用官方快照。维护者本机Git CLI仅用于项目提交和推送。
 
@@ -38,7 +42,7 @@ Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支
 需要具备文件读写、Python 执行、PDF与图片阅读能力的 Agent。Skill不包含模型、Office或字体，也不是独立的一键论文理解程序。
 
 - Python **3.10及以上**。
-- Python依赖：`python-docx`、`PyMuPDF`、`Pillow`，版本范围见 [requirements.txt](academic-paper-summary/requirements.txt)。
+- Python依赖：`python-docx`、`PyMuPDF`、`Pillow`，版本范围见 [requirements.txt](academic-summary/requirements.txt)。
 - DOCX排版复核：Microsoft Word、LibreOffice或Agent可用的等效渲染工具。
 - 字体：**宋体、楷体、Times New Roman**。字体不随仓库分发，缺字体时不能保证显示效果一致。
 
@@ -47,13 +51,13 @@ Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支
 Windows PowerShell（仓库根目录）：
 
 ```powershell
-powershell -NoProfile -File ./academic-paper-summary/scripts/bootstrap.ps1
+powershell -NoProfile -File ./academic-summary/scripts/bootstrap.ps1
 ```
 
 macOS/Linux：
 
 ```sh
-sh ./academic-paper-summary/scripts/bootstrap.sh
+sh ./academic-summary/scripts/bootstrap.sh
 ```
 
 入口脚本本身不依赖Python。Agent按“可用的专属`.venv` → Codex提供的Python → 用户本机Python”选择。在Codex中先通过`load_workspace_dependencies`发现运行时路径，传入Windows的`-RuntimePython`或macOS/Linux的`--runtime-python`，再验证是否可执行、版本和venv/ensurepip是否可用；工具不可用时才直接检查本机环境。用户无需手动寻找Codex缓存路径。
@@ -66,7 +70,7 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 
 首次配置需要安装requirements.txt中的依赖；依赖未改变且导入正常时直接复用、不重复安装。`--repair`可重查依赖，失败不向全局Python安装包。不要将本机`.venv`提交或打进ZIP，其他用户在自己电脑创建；依赖隔离不能替代Office与字体安装，也不保证不同机器依赖版本完全一致。
 
-使用返回的Python运行`scripts/check_environment.py --smoke`可复查环境：`0`表示依赖可用且检测到字体/渲染器，`1`表示必需环境失败，`2`表示字体或渲染器尚未确认。检查通过不等于Word实际排版通过。详细配置见[环境说明](academic-paper-summary/references/environment-setup.md)。
+使用返回的Python运行`scripts/check_environment.py --smoke`可复查环境：`0`表示依赖可用且检测到字体/渲染器，`1`表示必需环境失败，`2`表示字体或渲染器尚未确认。检查通过不等于Word实际排版通过。详细配置见[环境说明](academic-summary/references/environment-setup.md)。
 
 ## 使用
 
@@ -74,13 +78,13 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 
 > 使用article-skill技能，帮我总结文献并生成一个word文件。
 
-技能描述已包含`article-skill`常用名称。需要在客户端明确选择技能时，使用正式调用名：
+正式技能名为`article-skill`。需要在客户端明确选择技能时，使用正式调用名：
 
-> 使用 $academic-paper-summary，总结这篇论文，生成Word文档。
+> 使用 $article-skill，总结这篇论文，生成Word文档。
 
 多篇论文：
 
-> 使用 $academic-paper-summary，分别总结这些论文，每篇单独生成Word文档。
+> 使用 $article-skill，分别总结这些论文，每篇单独生成Word文档。
 
 所有机器均须调用安装目录内的`paper_artifacts.py init`，在用户工作区或当前任务的可写目录下创建独立论文目录，包含`source/`（单数）、`assets/`、`draft/`、`review/`、`memory/`、`final/`及manifest.json。Agent应报告目录绝对路径；只看到最终下载文件不代表中间目录不存在，云端任务的工作目录也不等于本机桌面。若没有这些目录，检查技能是否完整加载、init是否执行成功及输出位置；不得仅凭技能名称宣称使用了完整流程。
 
@@ -88,25 +92,25 @@ sh ./academic-paper-summary/scripts/bootstrap.sh
 
 ### 如何保持写作质量
 
-已内置[用户认可的写作示范与注解](academic-paper-summary/references/approved-writing-example.md)，包含研究主线、完整结论段落、三项贡献定位及正文/图注分工。Agent在写第一版正文前读取，用当前论文重新建立证据和提纲；不套用示例的材料、数值或五项结论。生成后分别复读正文逻辑、创新依据和子图说明，再检查实际Word。
+已内置[用户认可的写作示范与注解](academic-summary/references/approved-writing-example.md)，包含研究主线、完整结论段落、三项贡献定位及正文/图注分工。Agent在写第一版正文前读取，用当前论文重新建立证据和提纲；不套用示例的材料、数值或五项结论。生成后分别复读正文逻辑、创新依据和子图说明，再检查实际Word。
 
-Word排版前先完成[全文自审](academic-paper-summary/references/content-self-review.md)：由content_review.py导出可连续阅读的文字稿，Agent对照原文核查并修正，再记录本次审查。正常build入口会拒绝缺少或过期的内容审查记录；记录绑定源PDF、内容数据及审查笔记，不代表程序能自动验证科学正确性。裁片完整性和最终Word版面仍单独检查。
+Word排版前先完成[全文自审](academic-summary/references/content-self-review.md)：由content_review.py导出可连续阅读的文字稿，Agent对照原文核查并修正，再记录本次审查。正常build入口会拒绝缺少或过期的内容审查记录；记录绑定源PDF、内容数据及审查笔记，不代表程序能自动验证科学正确性。裁片完整性和最终Word版面仍单独检查。
 
-自审现直接绑定稿件原句：prepare生成逐项审核候选，verify核对当前原句、审核状态、创新依据字段及明确提供的比例计算；修订正文后须同步受影响的行。程序提供角度单位、倍率措辞和部分强判断的疑点提示，不自动猜测科学含义或改写事实。已有Markdown审核记录需要补齐逐项数据后再放行，详见[审核数据格式](academic-paper-summary/references/review-claims-schema.md)。维护与模型实测按[回归评估说明](academic-paper-summary/references/skill-evaluation.md)区分已知失败案例与未用于示范的论文。
+自审现直接绑定稿件原句：prepare生成逐项审核候选，verify核对当前原句、审核状态、创新依据字段及明确提供的比例计算；修订正文后须同步受影响的行。程序提供角度单位、倍率措辞和部分强判断的疑点提示，不自动猜测科学含义或改写事实。已有Markdown审核记录需要补齐逐项数据后再放行，详见[审核数据格式](academic-summary/references/review-claims-schema.md)。维护与模型实测按[回归评估说明](academic-summary/references/skill-evaluation.md)区分已知失败案例与未用于示范的论文。
 
-成稿用于提交给老师作为公众号文章，忠实介绍论文发现和贡献；数据核查过程、取值冲突和编辑质疑保存在内部review/memory，不进入正文。保留原文必要的试验条件与推测性质，不自行给每条结论追加局限性。
+成稿适用于文献精读、研究交流与知识传播，忠实介绍论文发现和贡献；数据核查过程、取值冲突和编辑质疑保存在内部review/memory，不进入正文。保留原文必要的试验条件与推测性质，不自行给每条结论追加局限性。
 
 主要结论另做整节叙述检查：每节围绕一个研究认识选择证据，图片辅助说明；即使事实都准确，也不能用图像信息与数据清单替代论述。整节审核保存在同一content-claims.json的sections中，绑定实际小标题和全文，不以图号数量、数字密度或固定句式判断质量。
 
 最终Word以中文总结标题命名；同名重建保留旧稿并追加版本后缀。导出PDF沿用对应Word的主文件名，只有非法字符、系统保留名或过长名称作必要处理。
 
-示范文件还包含老师附件的机制论述改写，以及实际生成稿中比较范围、图证归属、子图解释的正反对照；每例说明来源、为什么修改及如何迁移，避免只模仿句式。图注复核覆盖样品、条件、阶段及观测/模拟的区别，标签齐全不等于解释合格。
+示范文件还包含参考附件的机制论述改写，以及实际生成稿中比较范围、图证归属、子图解释的正反对照；每例说明来源、为什么修改及如何迁移，避免只模仿句式。图注复核覆盖样品、条件、阶段及观测/模拟的区别，标签齐全不等于解释合格。
 
 每篇的`memory/synthesis.md`保存研究主线、来源定位和贡献依据；多组多条件研究同时记录实际测试覆盖，防止将两组比较扩大为全组排序。用户另附指导文件时，原件/提取文本放`source/reference/`，本次有效要求与冲突处理放`memory/requirements.md`；通用规范保留在skill中，不要求每次重新提供附件。原始论文和用户附件不随仓库分发。
 
 规则按阶段读取：SKILL.md提供单一流程及规则分工；稳定要求、写作理解、内容自审、图像和Word格式各有明确归属。写作范例按难点选读，不默认加载全部references；quality-gates仅是检查索引，不另要求证据表或第二轮自审。句数、段落起句和数据数量不作为机械验收标准。
 
-已补充[公众号写作样本与取舍说明](academic-paper-summary/references/wechat-writing-examples.md)：从用户提供的五篇截图提炼少量短引文和改写对照，帮助组织结论、比较证据及定位贡献；排除广告，不采用网页格式，不将未经原论文核验的样本数据作为事实。完整截图不作为运行依赖或随包分发。
+已补充[公众号写作样本与取舍说明](academic-summary/references/wechat-writing-examples.md)：从用户提供的五篇截图提炼少量短引文和改写对照，帮助组织结论、比较证据及定位贡献；排除广告，不采用网页格式，不将未经原论文核验的样本数据作为事实。完整截图不作为运行依赖或随包分发。
 
 更新时须同步完整技能目录，包括新增references，不能只替换SKILL.md。不同模型的阅读与写作能力仍有差异；本次认可稿验证了示范写法，不代表所有模型或客户端已通过相同测试。结构检查通过也不等于科学事实与论述质量达标。
 
@@ -126,7 +130,7 @@ Word排版前先完成[全文自审](academic-paper-summary/references/content-s
 4. **创新点**：3点，每点通常2–3句，说明具体贡献和有依据的区别、意义。
 5. **引用格式**：引用当前被总结论文自身，重新核实作者、原文题名、期刊、年份、卷期页码和DOI，不能照搬模板或其他论文的引用。
 
-题目面向公众号读者，简短并突出有依据的发现、对比或权衡，避免平铺的长标题和夸张宣传。允许页面自然留白，不为填满页面扩写或反复调整。原文提取缺失须回看页面；图文证据、倍数与未失效数据须另行核对。
+题目面向文献阅读与知识传播，简短并突出有依据的发现、对比或权衡，避免平铺的长标题和夸张宣传。允许页面自然留白，不为填满页面扩写或反复调整。原文提取缺失须回看页面；图文证据、倍数与未失效数据须另行核对。
 
 正文直接陈述过程和结果，避免“作者在……”“本文提出……”等转述口吻。方法与结论的小项分别从1开始，不使用2.1、3.1。
 
@@ -151,12 +155,12 @@ Word排版前先完成[全文自审](academic-paper-summary/references/content-s
 | 图片介绍 | 楷体，11pt | Times New Roman，11pt | 加粗 |
 | 引用条目 | Times New Roman，小四12pt | 同左 | 常规 |
 
-完整规范以 [SKILL.md](academic-paper-summary/SKILL.md) 和 [格式说明](academic-paper-summary/references/output-formats.md) 为准。
+完整规范以 [SKILL.md](academic-summary/SKILL.md) 和 [格式说明](academic-summary/references/output-formats.md) 为准。
 
 ## 文件组织与预置工具
 
 ```text
-academic-paper-summary/
+academic-summary/
   SKILL.md
   agents/openai.yaml
   requirements.txt
@@ -184,7 +188,7 @@ outputs/日期时间_论文名_标记/
   final/      中文总结标题.docx及后续版本
 ```
 
-Agent复用预置脚本，不为每篇重写整套生成代码。相同PDF和分辨率的页面预览可缓存复用；文件改变或缓存损坏会重新生成。候选图引用索引辅助定位，不替代精读。裁图复核与最终逐页检查始终保留。命令和数据结构见 [工具工作流](academic-paper-summary/references/artifact-workflow.md)。
+Agent复用预置脚本，不为每篇重写整套生成代码。相同PDF和分辨率的页面预览可缓存复用；文件改变或缓存损坏会重新生成。候选图引用索引辅助定位，不替代精读。裁图复核与最终逐页检查始终保留。命令和数据结构见 [工具工作流](academic-summary/references/artifact-workflow.md)。
 
 ## 检查与维护
 
@@ -207,9 +211,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/push.ps1 -Message 
 在已配置依赖的仓库根目录执行（`python`须指向该环境）：
 
 ```sh
-python -m unittest discover -s academic-paper-summary/scripts -p "test_*.py"
-python academic-paper-summary/scripts/check_environment.py --smoke
-python academic-paper-summary/scripts/validate_summary.py path/to/summary.docx --expected-papers 1
+python -m unittest discover -s academic-summary/scripts -p "test_*.py"
+python academic-summary/scripts/check_environment.py --smoke
+python academic-summary/scripts/validate_summary.py path/to/summary.docx --expected-papers 1
 ```
 
 默认检查至少5项结论，不设结论图数下限；仅用户另外明确要求图数时使用 `--min-figures N`。结构检查不证明事实、子图解释、引用身份或版面正确。构建工具检查图号连续性、方法配图、引用题名/年份/已填DOI一致性及裁片复核状态；Agent仍需核对原文并查看最终文档。
@@ -218,16 +222,16 @@ python academic-paper-summary/scripts/validate_summary.py path/to/summary.docx -
 
 ## 发布范围与许可
 
-源码仓库包含 `academic-paper-summary/`、维护脚本`push.bat`与`scripts/`、本README、`.gitignore`和[LICENSE](LICENSE)，采用Apache-2.0许可证。安装Skill仍只需`academic-paper-summary/`目录。原论文、老师附件、他人总结、提取文本、截图、输出文档和字体不属于应随Skill发布的素材。
+源码仓库包含 `academic-summary/`、维护脚本`push.bat`与`scripts/`、本README、`.gitignore`和[LICENSE](LICENSE)，采用 **GNU GPL 2.0 only（SPDX: GPL-2.0-only）** 许可证，仅适用第2版，不含“或任何后续版本”授权。安装Skill仍只需`academic-summary/`目录，目录内附同一许可证全文；第三方论文、引文和素材的权利仍属于其各自权利人。原论文、参考附件、他人总结、提取文本、截图、输出文档和字体不属于应随Skill发布的素材。
 
 `.gitignore`忽略输出、临时目录、虚拟环境与本地打包文件；**已经被Git跟踪的文件不会因新增忽略规则而自动退出版本控制**。上传前检查 `git status` 和 `git ls-files`，确认没有夹带本地论文或生成材料。更新源码后不要继续分发旧的本地ZIP。
 
-生成执行检查见 [五个检查点](academic-paper-summary/references/quality-gates.md)：提取质量、标题与单位地址、具体陈述的证据、裁片拒用与实际成稿复核、问题关闭。程序不能代替真实阅读与看图。
+生成执行检查见 [五个检查点](academic-summary/references/quality-gates.md)：提取质量、标题与单位地址、具体陈述的证据、裁片拒用与实际成稿复核、问题关闭。程序不能代替真实阅读与看图。
 
 ## 每篇论文记忆
 
 新任务自动建立memory目录，其他Agent可先运行记忆check、阅读INDEX.md后继续工作。问题有open/resolved状态，证据和定位有recorded/verified状态；源文件、正文或图片等依赖变化会使相关记录过期。仅核实且未过期的内容可复用。记忆不跨论文自动传播，也不覆盖当前用户要求。
 
-交付前运行paper_memory.py check并通过--artifact指定实际成稿；未关闭问题和过期记录会阻止检查通过，草稿仍可构建。构建记录将Word绑定到实际使用的源PDF、正文、图片及裁图坐标；修改输入后须重建，不能用旧Word通过新内容的检查。旧版裁片缺源文件哈希时须重新裁取并复核，旧Word缺构建记录时须重建，不能直接补写“通过”。此检查不证明内容或图片本身正确。完整命令、字段、旧任务补建及协作规则见[记忆工作流](academic-paper-summary/references/memory-workflow.md)。
+交付前运行paper_memory.py check并通过--artifact指定实际成稿；未关闭问题和过期记录会阻止检查通过，草稿仍可构建。构建记录将Word绑定到实际使用的源PDF、正文、图片及裁图坐标；修改输入后须重建，不能用旧Word通过新内容的检查。旧版裁片缺源文件哈希时须重新裁取并复核，旧Word缺构建记录时须重建，不能直接补写“通过”。此检查不证明内容或图片本身正确。完整命令、字段、旧任务补建及协作规则见[记忆工作流](academic-summary/references/memory-workflow.md)。
 
 写作顺序：完整阅读→分类汇总→整体复读研究主线→组织正文→按需配图→成稿整体回读与事实核验。图注解释图片，正文按论述需要引用；不要求每图每子图都在正文点名。

@@ -12,7 +12,7 @@ import urllib.parse
 
 REPO = 'ws-cczj/article-skill'
 REMOTE = 'https://github.com/' + REPO + '.git'
-PREFIX = 'academic-paper-summary/'
+PREFIX = 'academic-summary/'
 
 
 def api(path):
