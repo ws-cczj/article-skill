@@ -6,13 +6,15 @@ compared against GitHub's blob manifest, without downloading the source archive.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import urllib.request
 import urllib.parse
 
 REPO = 'ws-cczj/article-skill'
 REMOTE = 'https://github.com/' + REPO + '.git'
-PREFIX = 'academic-summary/'
+PREFIX = ''
+LOCAL_DIRS = {'.git', '.venv', 'outputs', 'artifacts', 'tmp', '__pycache__', '.agents', '.skill-check', '.pytest_cache'}
 
 
 def api(path):
@@ -53,9 +55,16 @@ def compare_tree(skill, tree):
             hashes.add(blob_hash(data.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')))
         if sha not in hashes:
             changed.append(name)
-    extra = [p.relative_to(skill).as_posix() for p in skill.rglob('*')
-             if p.is_file() and not any(x in ('.git', '__pycache__', '.venv') for x in p.relative_to(skill).parts)
-             and p.suffix not in ('.pyc', '.pyo') and p.relative_to(skill).as_posix() not in expected]
+    extra = []
+    for folder, dirs, files in os.walk(skill):
+        dirs[:] = [name for name in dirs if name not in LOCAL_DIRS]
+        for name in files:
+            path = Path(folder) / name
+            relative = path.relative_to(skill).as_posix()
+            if path.suffix in ('.pyc', '.pyo') or relative == 'article-skill.zip':
+                continue
+            if relative not in expected:
+                extra.append(relative)
     return changed, sorted(extra)
 
 

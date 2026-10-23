@@ -10,7 +10,7 @@ class UpdateTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
-        self.skill = self.root / 'academic-summary'
+        self.skill = self.root / 'article-skill'
         (self.skill / 'scripts').mkdir(parents=True)
         (self.skill / 'SKILL.md').write_bytes(b'test\n')
         (self.skill / 'scripts/paper_artifacts.py').write_bytes(b'init\n')
@@ -35,6 +35,14 @@ class UpdateTests(unittest.TestCase):
     def test_incomplete_manifest_is_not_current(self):
         with self.assertRaises(ValueError):
             update.compare_tree(self.skill, {'truncated': True})
+
+    def test_root_install_ignores_local_output_but_checks_root_rules(self):
+        for folder in ('outputs', '.git', '.agents', '.skill-check', '.venv'):
+            (self.skill/folder).mkdir()
+            (self.skill/folder/'local.txt').write_text('local data')
+        self.assertEqual(update.compare_tree(self.skill, self.tree), ([], []))
+        (self.skill/'README.md').write_text('local root rule')
+        self.assertEqual(update.compare_tree(self.skill, self.tree)[1], ['README.md'])
 
 
 if __name__ == '__main__':

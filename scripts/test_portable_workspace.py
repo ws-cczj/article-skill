@@ -17,7 +17,7 @@ class PortableWorkspaceTests(unittest.TestCase):
             root = Path(temporary)
             installed = root / 'installed skill'
             shutil.copytree(Path(__file__).resolve().parents[1], installed,
-                            ignore=shutil.ignore_patterns('__pycache__', '.git'))
+                            ignore=shutil.ignore_patterns('__pycache__', '.git', '.venv', 'outputs', 'artifacts', 'tmp', '.agents', '.skill-check', 'article-skill.zip'))
             task = root / 'user task'
             task.mkdir()
             pdf = task / 'paper.pdf'
