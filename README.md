@@ -27,9 +27,9 @@
 
 ## 自动更新检查
 
-Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支的最新版本；有更新则先更新完整skill并重新读取规则，再开始总结。同一任务不在中途切换版本。本地修改不会被强制覆盖，必要时在独立目录使用官方最新版。Git与ZIP安装均有处理路径，详见[更新流程](academic-paper-summary/references/update-workflow.md)。
+Agent每次开始新的文献总结任务，会先对比官方GitHub默认分支的最新版本；有更新则先更新完整skill并重新读取规则，再开始总结。同一任务不在中途切换版本。本地修改不会被强制覆盖，必要时在独立目录使用官方最新版。各种完整目录安装使用同一HTTPS检查流程，详见[更新流程](academic-paper-summary/references/update-workflow.md)。
 
-预置`check_skill_update.py`先比较版本：Git提交相同且技能目录干净时立即结束；ZIP/复制安装比较远程文件清单及本地哈希；一致时不clone。只有需要不同的官方版本时才下载，Git安装优先fetch与fast-forward。
+预置`check_skill_update.py`仅通过HTTPS读取GitHub提交及文件哈希清单，与本地完整目录比较；不要求用户安装Git CLI，也不在检查时clone。内容一致时不下载，存在差异时保留本地定制并安全采用官方快照。维护者本机Git CLI仅用于项目提交和推送。
 
 这是Agent执行的前置流程，不是后台自动更新服务。需要网络及相应工具权限；检查失败会说明原因，不会假称已更新。用户可明确要求离线或固定版本。已安装旧版的用户需先更新一次，才能获得这项新规则。
 

@@ -1,25 +1,18 @@
 """Read-only official-version comparison. Never clone, fetch, or replace files.
 
-Uses only the Python standard library and Git when available. ZIP installs are
+Uses only Python standard-library HTTPS requests. All installs are
 compared against GitHub's blob manifest, without downloading the source archive.
 """
 import argparse
 import hashlib
 import json
 from pathlib import Path
-import shutil
-import subprocess
 import urllib.request
 import urllib.parse
 
 REPO = 'ws-cczj/article-skill'
 REMOTE = 'https://github.com/' + REPO + '.git'
 PREFIX = 'academic-paper-summary/'
-
-
-def git(*args):
-    return subprocess.check_output(['git', *args], stderr=subprocess.PIPE,
-                                   timeout=45).decode('utf-8').strip()
 
 
 def api(path):
@@ -31,12 +24,6 @@ def api(path):
 
 
 def remote_head():
-    if shutil.which('git'):
-        lines = git('ls-remote', '--symref', REMOTE, 'HEAD').splitlines()
-        branch = next(x.split()[1].removeprefix('refs/heads/')
-                      for x in lines if x.startswith('ref:'))
-        sha = next(x.split()[0] for x in lines if not x.startswith('ref:'))
-        return branch, sha
     branch = api('')['default_branch']
     return branch, api('/commits/' + urllib.parse.quote(branch, safe=''))['sha']
 
@@ -78,30 +65,11 @@ def check(skill):
         raise ValueError('Pass the actual installed skill directory containing SKILL.md')
     branch, remote_sha = remote_head()
     result = dict(skill_dir=str(skill), remote=REMOTE, branch=branch, remote_sha=remote_sha)
-    local_sha = None
-    if shutil.which('git'):
-        try:
-            root = Path(git('-C', str(skill), 'rev-parse', '--show-toplevel')).resolve()
-            if skill == root / 'academic-paper-summary':
-                local_sha = git('-C', str(root), 'rev-parse', 'HEAD')
-                dirty = git('-C', str(root), 'status', '--porcelain', '--untracked-files=all', '--', 'academic-paper-summary')
-                result['local_sha'] = local_sha
-                if local_sha == remote_sha:
-                    result['status'] = 'local_changes' if dirty else 'current'
-                    return result
-        except (subprocess.SubprocessError, OSError):
-            pass  # A copied skill need not retain Git metadata.
     changed, extra = compare_tree(skill, api('/git/trees/' + remote_sha + '?recursive=1'))
     result.update(changed_files=changed, extra_files=extra)
-    if not changed and not extra:
-        result['status'] = 'content_equal'
-    elif local_sha:
-        comparison = api('/compare/' + local_sha + '...' + remote_sha)
-        result['status'] = {'ahead': 'update_available', 'behind': 'local_ahead',
-                            'diverged': 'diverged', 'identical': 'local_changes'}[comparison['status']]
-    else:
-        result['status'] = 'different_unversioned'
+    result['status'] = 'content_equal' if not changed and not extra else 'different_unversioned'
     return result
+
 
 
 def main():
