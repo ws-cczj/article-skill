@@ -48,10 +48,24 @@ class ContentReviewTests(unittest.TestCase):
             builder.assert_not_called()
 
     def test_matching_review_calls_existing_builder(self):
+        figures = []
+        for i in range(5):
+            name = f'source/figure{i}.png'
+            (self.root/name).write_bytes(f'synthetic figure {i}'.encode())
+            figures.append(dict(number=i+1, caption='实际图注', image=name))
+        self.data['conclusions'][0]['figures'] = figures
+        save_json(self.root/'draft/report.json', self.data)
         self.approve()
         with patch('paper_artifacts.build', return_value='output') as builder:
             self.assertEqual(reviewed_build(self.root), 'output')
             builder.assert_called_once_with(self.root, 'draft/report.json')
+
+    def test_repeated_images_do_not_satisfy_minimum(self):
+        from content_review import check_conclusion_figures
+        (self.root/'source/same.png').write_bytes(b'same image')
+        self.data['conclusions'][0]['figures'] = [{'image':'source/same.png'}] * 5
+        with self.assertRaisesRegex(ValueError, '至少5张'):
+            check_conclusion_figures(self.root, self.data)
 
     def test_changed_dependencies_block_build(self):
         for name in ('draft/report.json', 'source/paper.pdf', self.notes, 'review/content-draft.md', 'review/content-claims.json'):

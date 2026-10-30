@@ -485,7 +485,9 @@ def build(root, content='draft/report.json'):
                 p.paragraph_format.page_break_before=True
             for text in item['paragraphs']:paragraph(text)
             figures(item.get('figures',[]))
-    paragraph('四、创新点','Heading 2')
+    p=paragraph('四、创新点','Heading 2')
+    if data.get('innovations_page_break_before'):
+        p.paragraph_format.page_break_before=True
     for n,text in enumerate(data['innovations'],1):paragraph(f'{n}. {text}')
     paragraph('五、引用格式','Heading 2')
     for citation_line in citation_paragraphs(data['citation']):

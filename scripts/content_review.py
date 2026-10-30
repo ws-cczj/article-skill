@@ -88,8 +88,16 @@ def check(root, content='draft/report.json'):
 
 def reviewed_build(root, content='draft/report.json'):
     check(root, content)
+    check_conclusion_figures(root, read_json(inside(root, content)))
     from paper_artifacts import build
     return build(root, content)
+
+
+def check_conclusion_figures(root, data):
+    figures = [f for item in data.get('conclusions', []) for f in item.get('figures', [])]
+    unique = {digest(inside(root, f['image'])) for f in figures}
+    if len(unique) < 5:
+        raise ValueError('主要结论至少5张不同图片，方法图、题名截图及重复图片不计；原文少图须说明并由用户确认例外')
 
 
 def main():

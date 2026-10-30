@@ -215,7 +215,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('path', type=Path)
     parser.add_argument('--expected-papers', type=int)
-    parser.add_argument('--min-figures', type=int, default=0, help='Optional explicit user figure quota; default has no figure count floor')
+    parser.add_argument('--min-figures', type=int, default=5, help='Conclusion figure minimum, excluding methods and title images; default 5')
     parser.add_argument('--min-figures-per-paper', help='例如3,5；来自源文清点或用户要求')
     parser.add_argument('--innovation-count', type=int, default=3)
     args = parser.parse_args()

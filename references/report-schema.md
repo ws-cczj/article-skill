@@ -28,7 +28,7 @@ The methods section must include at least one figure. Prefer preparation, specim
 
 ### 三、主要结论
 
-Include at least five evidence-based findings, with no fixed count of six or upper limit. Follow the paper’s research progression and actual relationships between findings. Develop each finding in as many substantive paragraphs as needed. Select only useful supporting figures; there is no per-finding or total conclusion-figure quota. Do not invent findings or split sentences merely to meet the count.
+Include at least five evidence-based findings, with no fixed count of six or upper limit. Follow the paper’s research progression and actual relationships between findings. Develop each finding in as many substantive paragraphs as needed. Select only useful supporting figures; include at least five distinct source figures in conclusions, excluding methods and title screenshots; do not count individual panels separately or duplicate images to meet the minimum. There is no per-finding quota. Do not invent findings or split sentences merely to meet the count.
 
 Restart result subsection numbering at 1, 2, 3, never 3.1, 3.2.
 
