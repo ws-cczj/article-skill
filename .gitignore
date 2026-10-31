@@ -8,3 +8,10 @@ tmp/
 # Local runtime and generated distribution archive
 .venv/
 article-skill.zip
+
+# Local agent tooling and personal publishing helpers
+.agents/
+.skill-check/
+push.bat
+scripts/push.ps1
+scripts/test_push.py

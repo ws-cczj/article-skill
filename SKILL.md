@@ -30,7 +30,7 @@ description: article-skill（SCI文献精读总结）：主要面向SCI论文，
 | Word格式与视觉验收 | [output-formats.md](references/output-formats.md) | 构建及渲染检查时；字体字号只以此表为准 |
 | 记忆、问题与交接 | [memory-workflow.md](references/memory-workflow.md) | 初始化/接手及记录问题时 |
 
-[quality-gates.md](references/quality-gates.md)是上述流程的简短检查索引，不是第二轮自审或第二份证据表。来源角色不清时查[input-and-source-policy.md](references/input-and-source-policy.md)；[skill-evaluation.md](references/skill-evaluation.md)仅供维护评估，不属于每篇总结流程。
+[quality-gates.md](references/quality-gates.md)是上述流程的简短检查索引，不是第二轮自审或第二份证据表。来源角色不清时查[input-and-source-policy.md](references/input-and-source-policy.md)。
 
 ## 不变的交付要求
 
