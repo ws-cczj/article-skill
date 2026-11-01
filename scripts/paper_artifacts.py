@@ -51,7 +51,7 @@ def unique_file(folder, stem, extension):
     raise ValueError('Too many output versions')
 
 
-def title_output(root, title):
+def title_output(root, title, numbered=True):
     """Use the summary title; preserve prior documents and their review records."""
     stem = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', title).strip(' .') or '论文总结'
     if re.match(r'^(?:CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])(?:\.|$)', stem, re.I):
@@ -60,8 +60,10 @@ def title_output(root, title):
     while len(stem.encode('utf-8')) > 200:
         stem = stem[:-1]
     stem = stem.rstrip(' .')
+    if not numbered:
+        return root / 'final' / f'{stem}.docx'
     for number in range(1, 10000):
-        name = stem if number == 1 else f'{stem}-{number:03}'
+        name = f'{stem}-{number:03}'
         output = root / 'final' / f'{name}.docx'
         if not output.exists() and not any((root / 'review' / f'{name}{suffix}').exists()
                 for suffix in ('-build.json', '-figure-map.json')):
@@ -506,6 +508,34 @@ def build(root, content='draft/report.json'):
     return output
 
 
+def finalize(root, artifact, content='draft/report.json'):
+    """Publish a checked version under its title, preserving previous delivery files."""
+    source = inside(root, artifact)
+    receipt = verify_build(root, artifact, content)
+    target = title_output(root, read_json(inside(root, content))['title_zh'], numbered=False)
+    if source == target:
+        return target
+    if target.exists() or target.with_suffix('.pdf').exists():
+        archive = root / 'review' / ('previous-delivery-' + uuid4().hex)
+        archive.mkdir()
+        for old in (target, target.with_suffix('.pdf'),
+                    root/'review'/f'{target.stem}-build.json',
+                    root/'review'/f'{target.stem}-figure-map.json'):
+            if old.exists():
+                shutil.copy2(old, archive/old.name)
+    shutil.copy2(source, target)
+    pdf = source.with_suffix('.pdf')
+    if pdf.exists():
+        shutil.copy2(pdf, target.with_suffix('.pdf'))
+    elif target.with_suffix('.pdf').exists():
+        target.with_suffix('.pdf').unlink()  # archived above; do not pair a stale PDF
+    receipt['artifact'] = target.relative_to(root).as_posix()
+    save_json(root/'review'/f'{target.stem}-build.json', receipt)
+    shutil.copy2(root/'review'/f'{source.stem}-figure-map.json',
+                 root/'review'/f'{target.stem}-figure-map.json')
+    return target
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     subs=parser.add_subparsers(dest='command',required=True)
@@ -516,6 +546,7 @@ def main():
     cmd=subs.add_parser('review-crop');cmd.add_argument('--workspace',required=True);cmd.add_argument('--image',required=True);cmd.add_argument('--note',required=True)
     cmd=subs.add_parser('reject-crop');cmd.add_argument('--workspace',required=True);cmd.add_argument('--image',required=True);cmd.add_argument('--reason',required=True)
     cmd=subs.add_parser('build');cmd.add_argument('--workspace',required=True);cmd.add_argument('--content',default='draft/report.json')
+    cmd=subs.add_parser('finalize');cmd.add_argument('--workspace',required=True);cmd.add_argument('--artifact',required=True);cmd.add_argument('--content',default='draft/report.json')
     args=parser.parse_args()
     try:
         if args.command=='init': result=initialize(args.pdf,args.output_root,args.name)
@@ -524,6 +555,7 @@ def main():
         elif args.command=='inspect-crop':result=inspect_crop(workspace(args.workspace),args.image)
         elif args.command=='review-crop':result=review_crop(workspace(args.workspace),args.image,args.note)
         elif args.command=='reject-crop':result=reject_crop(workspace(args.workspace),args.image,args.reason)
+        elif args.command=='finalize':result=finalize(workspace(args.workspace),args.artifact,args.content)
         else:result=build(workspace(args.workspace),args.content)
         print(result)
     except Exception as exc:

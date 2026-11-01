@@ -17,19 +17,34 @@ class ArtifactTests(unittest.TestCase):
         first = build(self.root)
         before = first.read_bytes()
         second = build(self.root)
-        self.assertEqual(first.name, '复合材料的损伤与性能.docx')
+        self.assertEqual(first.name, '复合材料的损伤与性能-001.docx')
         self.assertEqual(second.name, '复合材料的损伤与性能-002.docx')
         self.assertEqual(first.read_bytes(), before)
         self.assertEqual(read_json(self.root/'review'/f'{second.stem}-build.json')['artifact'],
                          second.relative_to(self.root).as_posix())
 
+    def test_finalize_preserves_versions_and_receipt(self):
+        from paper_artifacts import finalize, verify_build
+        first = build(self.root)
+        first.with_suffix('.pdf').write_bytes(b'preview')
+        final = finalize(self.root, first.relative_to(self.root).as_posix())
+        self.assertFalse(final.stem.endswith('-001'))
+        self.assertEqual(final.read_bytes(), first.read_bytes())
+        self.assertTrue(final.with_suffix('.pdf').exists())
+        second = build(self.root)
+        finalize(self.root, second.relative_to(self.root).as_posix())
+        self.assertFalse(final.with_suffix('.pdf').exists())
+        self.assertTrue(first.exists())
+        self.assertTrue(list((self.root/'review').glob('previous-delivery-*/*.pdf')))
+        verify_build(self.root, final.relative_to(self.root).as_posix(), 'draft/report.json')
+
     def test_title_filename_safety_and_existing_records(self):
         from paper_artifacts import title_output
-        self.assertEqual(title_output(self.root,'A/B:C?').name, 'A_B_C_.docx')
-        self.assertEqual(title_output(self.root,'CON').name, '_CON.docx')
+        self.assertEqual(title_output(self.root,'A/B:C?').name, 'A_B_C_-001.docx')
+        self.assertEqual(title_output(self.root,'CON').name, '_CON-001.docx')
         long_name = title_output(self.root,'材料'*200)
         self.assertLessEqual(len(long_name.name.encode('utf-8')),255)
-        (self.root/'review'/'已有标题-build.json').write_text('{}')
+        (self.root/'review'/'已有标题-001-build.json').write_text('{}')
         self.assertEqual(title_output(self.root,'已有标题').name,'已有标题-002.docx')
 
     def test_caption_panel_coverage_and_real_descriptions(self):
