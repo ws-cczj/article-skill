@@ -16,7 +16,7 @@ Use a concise, natural Chinese academic title drawing on the supplied writing ex
 
 ### 一、研究背景
 
-Use exactly three connected body paragraphs: (1) the research/application problem and its context; (2) existing work and the unresolved gap; (3) the current study’s objective and approach. Ground all three in the source paper, maintain natural transitions, and do not add subheadings or mechanically split sentences to meet the count. Do not invent gaps or pad the background.
+Use exactly three connected body paragraphs: (1) the research/application problem and its context; (2) existing work and the unresolved gap; (3) why the remaining problem matters and the study’s conceptual entry point. Use declarative prose rather than questions, an experimental plan, or a list of samples, instruments and analysis steps; put those details in methods. Ground all three in the source paper, maintain natural transitions, and do not add subheadings or mechanically split sentences to meet the count. Do not invent gaps or pad the background.
 
 ### 二、研究方法
 
@@ -24,7 +24,7 @@ Default to two groups: keep ALL material/specimen preparation, processing and fa
 
 Number method subsections 1, 2, 3 independently, never 2.1, 2.2. Keep each category to a concise paragraph where practical, covering actual work and essential conditions without tutorial detail.
 
-The methods section must include at least one figure. Prefer preparation, specimen, apparatus or model illustrations, but absence of a dedicated methods diagram is NOT an exemption: select another source figure that best explains the study object, observation or test, and describe its actual content. Omit only when the source paper contains no figures at all; record that finding in methods_figure_absence_reason. Never invent or mislabel a figure.
+The methods section must include at least one figure. When suitable source images exist, illustrate preparation/specimen treatment and characterization/testing/simulation separately, adjacent to each subsection. This is not an unconditional two-image quota: document a missing category internally and do not mislabel result plots as fabrication diagrams. Prefer preparation, specimen, apparatus or model illustrations, but absence of a dedicated methods diagram is NOT an exemption: select another source figure that best explains the study object, observation or test, and describe its actual content. Omit only when the source paper contains no figures at all; record that finding in methods_figure_absence_reason. Never invent or mislabel a figure.
 
 ### 三、主要结论
 
@@ -46,7 +46,7 @@ This section explains the paper's substantive findings and their relationships. 
 
 ### 四、创新点
 
-List three concrete contributions. Expand each into a compact paragraph stating the contribution, a supported distinction, and its specific significance where evidenced. Sentence count and order follow the content; 2–3 sentences is only a common length, not an acceptance criterion. Avoid slogans, speculative novelty, padding, and merely repeating result numbers. Use numbered points or short paragraphs, not bullet dots; make the boundaries between points obvious.
+List three concrete contributions. Open each with a specific contribution using 揭示了、提出了、明确了、阐明了 or 解释了 as warranted by the source. The verb must introduce an actual new relationship, strategy, evidence or explanation, not a list of research actions. Distinguish proposing a method from extending an existing model, and retain uncertainty in inferred mechanisms. Expand each into a compact paragraph stating the contribution, a supported distinction, and its specific significance where evidenced. Sentence count and order follow the content; 2–3 sentences is only a common length, not an acceptance criterion. Avoid slogans, speculative novelty, padding, and merely repeating result numbers. Use numbered points or short paragraphs, not bullet dots; make the boundaries between points obvious.
 
 Before drafting, identify each contribution's baseline or unresolved problem as described in the source paper, the actual increment, and the evidence and specific value of that increment. Rewording three findings, listing tools, or presenting untested future suggestions is insufficient. Do not force every paper into method/mechanism/model categories. If three distinct contributions cannot be supported after rereading, disclose the shortfall instead of inventing novelty to satisfy the format.
 
