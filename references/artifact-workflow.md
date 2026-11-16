@@ -71,7 +71,7 @@ init生成空的`draft/report.json`。将精读确认后的中文内容填入以
 {
   "title_zh": "中文总结题目（必填，可编辑文字）",
   "identity_images": ["assets/identity-001.png"],
-  "background": ["研究问题与背景", "已有研究及不足", "研究目的与思路"],
+  "background": ["研究需求与具体瓶颈", "承接该瓶颈的已有进展与未解决问题", "回应上述不足的研究切入点与必要性"],
   "methods": [
     {
       "heading": "材料设计与制备",

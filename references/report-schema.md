@@ -16,7 +16,7 @@ Use a concise, natural Chinese academic title drawing on the supplied writing ex
 
 ### 一、研究背景
 
-Use exactly three connected body paragraphs: (1) the research/application problem and its context; (2) existing work and the unresolved gap; (3) why the remaining problem matters and the study’s conceptual entry point. Use declarative prose rather than questions, an experimental plan, or a list of samples, instruments and analysis steps; put those details in methods. Ground all three in the source paper, maintain natural transitions, and do not add subheadings or mechanically split sentences to meet the count. Do not invent gaps or pad the background.
+Use exactly three connected body paragraphs: (1) the research/application problem and its context; (2) existing work and the unresolved gap; (3) why the remaining problem matters and the study’s conceptual entry point. Use declarative prose rather than questions, an experimental plan, or a list of samples, instruments and analysis steps; put those details in methods. Ground all three in the source paper. Paragraph 2 must address the specific bottleneck raised in paragraph 1, and paragraph 3 must explain the research entry point that responds to paragraph 2’s gap. Do not invent gaps or present this paper’s new findings as established background. Maintain natural transitions, and do not add subheadings or mechanically split sentences to meet the count. Do not invent gaps or pad the background.
 
 ### 二、研究方法
 
@@ -41,6 +41,8 @@ Order findings by their actual evidentiary relationships: observed changes, comp
 Integrate source-supported conditions into the relevant finding when they change its meaning; do not add a separate limitation item or reviewer commentary. This is a literature summary for research reading and communication. Keep source discrepancies, calculation audits and editorial doubts in review/memory; use the handling guidance in [content-self-review.md](content-self-review.md) when they affect accurate summarization.
 
 Number figures by their actual appearance in the summary, starting at 1 in methods and continuing through conclusions. Exclude the title-area screenshot. Store source numbering separately in source_figure, and update all prose references when order changes.
+
+In body prose, use full stops for independent complete judgments rather than chaining findings and explanations with semicolons. Retain semicolons where needed for complex parallel parameter groups or subfigure captions; never globally replace punctuation.
 
 This section explains the paper's substantive findings and their relationships. Figure discussion supports those findings; neither caption paraphrases nor image-by-image narration replace the research account. Do not create a detached figure-analysis chapter by default.
 
