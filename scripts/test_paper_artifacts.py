@@ -190,6 +190,25 @@ class ArtifactTests(unittest.TestCase):
             citation_metadata=dict(original_title='English paper title and authors',authors=['Test A'],journal='Synthetic Journal',year='2026'))
         save_json(self.root/'draft/report.json',self.data)
 
+    def test_optional_interpretation_follows_caption_as_body_text(self):
+        from content_review import prose
+        from review_claims import seed
+
+        item = self.data['conclusions'][0]
+        closing = '界面保持结合，解释了试样的抗弯表现。'
+        item['figures'][0]['after_caption'] = closing
+        save_json(self.root/'draft/report.json', self.data)
+        paragraphs = Document(build(self.root)).paragraphs
+        pos = next(i for i, p in enumerate(paragraphs) if p.text == '图2 合成图注')
+        self.assertTrue(paragraphs[pos - 1]._p.xpath('.//wp:inline'))
+        self.assertEqual(paragraphs[pos + 1].text, closing)
+        self.assertEqual(paragraphs[pos + 1].style.name, 'Normal')
+        self.assertIn('图2 合成图注\n\n' + closing, prose(self.data))
+        review = seed(self.data)
+        self.assertEqual(review['sections'][0]['paragraphs'][-1], closing)
+        self.assertIn('conclusions.0.figures.0.after_caption',
+                      [row['path'] for row in review['claims']])
+
     def test_background_requires_exactly_three_paragraphs(self):
         for count in (2, 4):
             self.data['background'] = ['背景'] * count

@@ -32,6 +32,8 @@ def prose(data):
                     lines += [paragraph, '']
                 for figure in item.get('figures', []):
                     lines += [f'图{figure["number"]} {figure["caption"]}', '']
+                    if 'after_caption' in figure:
+                        lines += [figure['after_caption'], '']
     lines += ['## 引用格式', '', '\n\n'.join(citation_paragraphs(data.get('citation', ''))), '']
     return '\n'.join(lines)
 

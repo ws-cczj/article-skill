@@ -15,6 +15,8 @@ def fields(data):
                 result[f'{section}.{i}.paragraphs.{j}'] = text
             for j, figure in enumerate(item.get('figures', [])):
                 result[f'{section}.{i}.figures.{j}.caption'] = figure['caption']
+                if 'after_caption' in figure:
+                    result[f'{section}.{i}.figures.{j}.after_caption'] = figure['after_caption']
     return result
 
 
@@ -30,11 +32,16 @@ def hints(text):
 
 
 def required(path, text):
-    return (path == 'title_zh' or path.startswith('innovations.')
+    return (path == 'title_zh' or path.endswith('.after_caption') or path.startswith('innovations.')
             or (path.startswith('methods.') and '.paragraphs.' in path)
             or (path.startswith('conclusions.') and
                 (re.search(r'\d', text) or hints(text)))
             or bool(hints(text)))
+
+
+def section_prose(item):
+    return list(item['paragraphs']) + [f['after_caption'] for f in item.get('figures', [])
+                                       if 'after_caption' in f]
 
 
 def seed(data):
@@ -43,7 +50,7 @@ def seed(data):
          'source': '', 'evidence': '', 'judgment': '', 'calculations': []}
         for path, text in fields(data).items() if required(path, text)],
         'sections': [
-            {'index': i, 'heading': item['heading'], 'paragraphs': list(item['paragraphs']),
+            {'index': i, 'heading': item['heading'], 'paragraphs': section_prose(item),
              'status': 'pending', 'question': '', 'takeaway': '',
              'evidence_use': '', 'coherence_review': ''}
             for i, item in enumerate(data.get('conclusions', []))]}
@@ -120,7 +127,7 @@ def validate(data, review):
             raise ValueError('Invalid or duplicate conclusion review index')
         indices.add(i)
         actual_section = conclusions[i]
-        if section.get('heading') != actual_section['heading'] or section.get('paragraphs') != actual_section['paragraphs']:
+        if section.get('heading') != actual_section['heading'] or section.get('paragraphs') != section_prose(actual_section):
             raise ValueError(f'Whole-section review differs from actual draft: conclusions.{i}')
         if section.get('status') != 'verified':
             raise ValueError(f'Unresolved whole-section narrative review: conclusions.{i}')

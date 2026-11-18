@@ -361,6 +361,8 @@ def validate_content(root, data):
                         positions.append(marker.start())
                     if positions!=sorted(positions):
                         raise ValueError('Caption panels must follow source-confirmed panel_labels order')
+                if 'after_caption' in figure:
+                    texts.append(figure['after_caption'])
                 texts.append(figure['caption']);images.append(figure['image'])
     if not any(item.get('figures') for item in data['methods']):
         if any(item.get('figures') for item in data['conclusions']) or not nonempty(data.get('methods_figure_absence_reason')):
@@ -475,6 +477,8 @@ def build(root, content='draft/report.json'):
             figure_number+=1
             picture(f['image'],17)
             paragraph(f'图{figure_number} {f["caption"]}','Caption')
+            if 'after_caption' in f:
+                paragraph(f['after_caption'])
     paragraph(data['title_zh'],'Heading 1')
     for identity in data['identity_images']:picture(identity,8)
     paragraph('一、研究背景','Heading 2')
