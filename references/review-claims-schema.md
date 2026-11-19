@@ -2,9 +2,9 @@
 
 prepare导出阅读稿并首次生成review/content-claims.json。再次prepare保留已填数据，另生成content-claims-candidate.json供比较；合并变化的行、删除不存在的行，保留不受影响的核验结果，不批量改verified。path是report.json字段路径，数组从0计数，quote必须与该字段全文一致。
 
-自动选中题目、方法正文、每项创新及含数字或部分强判断的结论字段。Agent按需添加其他背景、结论或图注字段。每行可含多句，须核查完整字段，不能只核对其中一个数字。
+自动选中题目、方法正文、每项创新、可选的图后补充正文及含数字或部分强判断的结论字段。Agent按需添加其他背景、结论或图注字段。每行可含多句，须核查完整字段，不能只核对其中一个数字。
 
-同一文件的sections数组承担整节叙述自审，与claims事实核对分工不同。每条结论对应一项，index从0开始；heading及paragraphs由prepare从实际稿件复制，必须保持一致。实际复读后填写question（回答的问题）、takeaway（核心认识）、evidence_use（必要证据如何支撑认识）、coherence_review（对当前各段作用及重组结果的具体判断），再将status由pending改为verified。不新建另一套审核文件，不要求每节套同一句式。旧任务缺少sections时从再次prepare产生的候选文件合并，不能仅凭事实审核状态直接放行。正文改动后重新复核受影响整节及相邻逻辑。
+同一文件的sections数组承担整节叙述自审，与claims事实核对分工不同。每条结论对应一项，index从0开始；heading及paragraphs由prepare从实际稿件复制，必须保持一致。这里的paragraphs也收录本节图注之后实际填写的补充正文。实际复读后填写question（回答的问题）、takeaway（核心认识）、evidence_use（必要证据如何支撑认识）、coherence_review（对当前各段作用及重组结果的具体判断），再将status由pending改为verified。不新建另一套审核文件，不要求每节套同一句式。旧任务缺少sections时从再次prepare产生的候选文件合并，不能仅凭事实审核状态直接放行。正文改动后重新复核受影响整节及相邻逻辑。
 
 - source：当前论文可定位的页码、图表或段落。
 - evidence：源文实际事实或短摘录，写清样品、条件及物理量定义；图像证据可写具体观察。
